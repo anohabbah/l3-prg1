@@ -154,7 +154,7 @@ public class MySet extends List<SubSet> {
                     cur = it.nextValue();
                 }
 
-                switch (compare(cur.rank, rank)) {
+                switch (MySet.compare(cur.rank, rank)) {
                     case EGAL:
                         cur.set.add(element);
                         break;
@@ -253,7 +253,7 @@ public class MySet extends List<SubSet> {
         while (!it.isOnFlag()) {
             SubSet cur = it.getValue();
             SubSet cur2 = it2.getValue();
-            switch (compare(cur.rank, cur2.rank)) {
+            switch (MySet.compare(cur.rank, cur2.rank)) {
                 case INF:
                     it.goForward();
                     break;
@@ -291,7 +291,7 @@ public class MySet extends List<SubSet> {
             SubSet cur = it.getValue();
             SubSet cur2 = it2.getValue();
 
-            switch (compare(cur.rank, cur2.rank)) {
+            switch (MySet.compare(cur.rank, cur2.rank)) {
                 case INF:
                     it.goForward();
                     break;
@@ -335,7 +335,7 @@ public class MySet extends List<SubSet> {
             SubSet cur = it.getValue();
             SubSet cur2 = it2.getValue();
 
-            switch (compare(cur.rank, cur2.rank)) {
+            switch (MySet.compare(cur.rank, cur2.rank)) {
                 case INF:
                     it.remove();
                     break;
@@ -372,7 +372,7 @@ public class MySet extends List<SubSet> {
             SubSet cur = it.getValue();
             SubSet cur2 = it2.getValue();
 
-            switch (compare(cur.rank, cur2.rank)) {
+            switch (MySet.compare(cur.rank, cur2.rank)) {
                 case INF:
                     it.goForward();
                     break;
@@ -420,7 +420,7 @@ public class MySet extends List<SubSet> {
                 SubSet cur = it.getValue();
                 SubSet cur2 = it2.getValue();
 
-                switch (compare(cur.rank, cur2.rank)) {
+                switch (MySet.compare(cur.rank, cur2.rank)) {
                     case INF:
                         b = false;
                         break;
