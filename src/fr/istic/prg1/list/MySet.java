@@ -250,18 +250,23 @@ public class MySet extends List<SubSet> {
         while ( !it.isOnFlag() ) {
             SubSet cur = it.getValue();
             SubSet cur2 = it2.getValue();
-            if (cur.rank < cur2.rank) {
-                it.goForward();
-            } else if (cur.rank > cur2.rank) {
-                it2.goForward();
-            } else {
-                cur.set.difference(cur2.set);
-                if (cur.set.isEmpty()) {
-                    it.remove();
-                } else {
+            switch (compare(cur.rank, cur2.rank)) {
+                case Comparison.INF:
                     it.goForward();
-                }
-                it2.goForward();
+                    break;
+
+                case Comparison.SUP:
+                    it2.goForward();
+                    break;
+
+                default:
+                    cur.set.difference(cur2.set);
+                    if (cur.set.isEmpty()) {
+                        it.remove();
+                    } else {
+                        it.goForward();
+                    }
+                    it2.goForward();
             }
         }
     }
@@ -282,6 +287,7 @@ public class MySet extends List<SubSet> {
         while ( !it.isOnFlag() ) {
             SubSet cur = it.getValue();
             SubSet cur2 = it2.getValue();
+            switch (compare())
             if (cur.rank < cur2.rank) {
                 it.goForward();
             } else if (cur.rank > cur2.rank) {
