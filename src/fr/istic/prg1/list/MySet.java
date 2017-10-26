@@ -14,7 +14,7 @@ import fr.istic.prg1.list.util.List;
 import fr.istic.prg1.list.util.SmallSet;
 
 /**
- * @author Micka�l Foursov <foursov@univ-rennes1.fr>
+ * @author Mickaël Foursov <foursov@univ-rennes1.fr>
  * @version 4.0
  * @since 2015-06-15
  */
@@ -22,16 +22,16 @@ import fr.istic.prg1.list.util.SmallSet;
 public class MySet extends List<SubSet> {
 
     /**
-     * Borne sup�rieure pour les rangs des sous-ensembles.
+     * Borne supérieure pour les rangs des sous-ensembles.
      */
     private static final int MAX_RANG = 128;
     /**
-     * Sous-ensemble de rang maximal � mettre dans le drapeau de la liste.
+     * Sous-ensemble de rang maximal à mettre dans le drapeau de la liste.
      */
     private static final SubSet FLAG_VALUE = new SubSet(MAX_RANG,
             new SmallSet());
     /**
-     * Entr�e standard.
+     * Entrée standard.
      */
     private static final Scanner standardInput = new Scanner(System.in);
 
@@ -41,7 +41,7 @@ public class MySet extends List<SubSet> {
     }
 
     /**
-     * Fermer tout (actuellement juste l'entr�e standard).
+     * Fermer tout (actuellement juste l'entrée standard).
      */
     public static void closeAll() {
         standardInput.close();
@@ -58,8 +58,8 @@ public class MySet extends List<SubSet> {
     }
 
     /**
-     * Afficher � l'�cran les entiers appartenant � this, dix entiers par ligne
-     * d'�cran.
+     * Afficher à l'écran les entiers appartenant à this, dix entiers par ligne
+     * d'écran.
      */
     public void print() {
         System.out.println(" [version corrigee de contenu]");
@@ -72,7 +72,7 @@ public class MySet extends List<SubSet> {
     // //////////////////////////////////////////////////////////////////////////////
 
     /**
-     * @return true si le nombre saisi par l'utilisateur appartient � this,
+     * @return true si le nombre saisi par l'utilisateur appartient à this,
      * false sinon
      */
     public boolean contains() {
@@ -82,8 +82,8 @@ public class MySet extends List<SubSet> {
     }
 
     /**
-     * @param value valeur � tester
-     * @return true si valeur appartient � l'ensemble, false sinon
+     * @param value valeur à tester
+     * @return true si valeur appartient à l'ensemble, false sinon
      */
 
     public boolean contains(int value) {
@@ -106,8 +106,8 @@ public class MySet extends List<SubSet> {
     }
 
     /**
-     * Ajouter � this toutes les valeurs saisies par l'utilisateur et afficher
-     * le nouveau contenu (arr�t par lecture de -1).
+     * Ajouter à this toutes les valeurs saisies par l'utilisateur et afficher
+     * le nouveau contenu (arrêt par lecture de -1).
      */
     public void add() {
         System.out.println(" valeurs a ajouter (-1 pour finir) : ");
@@ -117,9 +117,9 @@ public class MySet extends List<SubSet> {
     }
 
     /**
-     * Ajouter � this toutes les valeurs prises dans is.
+     * Ajouter à this toutes les valeurs prises dans is.
      *
-     * @param is flux d'entr�e.
+     * @param is flux d'entrée.
      */
     public void add(InputStream is) {
         Scanner scanner = new Scanner(is);
@@ -134,9 +134,9 @@ public class MySet extends List<SubSet> {
     }
 
     /**
-     * Ajouter value � this.
+     * Ajouter value à this.
      *
-     * @param value valuer � ajouter.
+     * @param value valuer à ajouter.
      */
     public void addNumber(int value) {
         if ((value >= 0 && value <= 32767) && !this.contains(value)) {
@@ -154,12 +154,15 @@ public class MySet extends List<SubSet> {
                     cur = it.nextValue();
                 }
 
-                if (cur.rank == rank) {
-                    cur.set.add(element);
-                } else {
-                    SmallSet set = new SmallSet();
-                    set.add(element);
-                    it.addLeft(new SubSet(rank, set));
+                switch (compare(cur.rank, rank)) {
+                    case EGAL:
+                        cur.set.add(element);
+                        break;
+
+                    default:
+                        SmallSet set = new SmallSet();
+                        set.add(element);
+                        it.addLeft(new SubSet(rank, set));
                 }
             }
         }
@@ -179,7 +182,7 @@ public class MySet extends List<SubSet> {
     /**
      * Supprimer de this toutes les valeurs prises dans is.
      *
-     * @param is flux d'entr�e
+     * @param is flux d'entrée
      */
     public void remove(InputStream is) {
         Scanner scanner = new Scanner(is);
@@ -196,7 +199,7 @@ public class MySet extends List<SubSet> {
     /**
      * Supprimer value de this.
      *
-     * @param value valeur � supprimer
+     * @param value valeur à supprimer
      */
     public void removeNumber(int value) {
         if ((value >= 0 && value <= 32767) && this.contains(value)) {
@@ -235,9 +238,9 @@ public class MySet extends List<SubSet> {
     // /////////////////////////////////////////////////////////////////////////////
 
     /**
-     * This devient la diff�rence de this et set2.
+     * This devient la différence de this et set2.
      *
-     * @param set2 deuxi�me ensemble
+     * @param set2 deuxième ensemble
      */
     public void difference(MySet set2) {
         if (this.equals(set2)) {
@@ -272,9 +275,9 @@ public class MySet extends List<SubSet> {
     }
 
     /**
-     * This devient la diff�rence sym�trique de this et set2.
+     * This devient la différence symétrique de this et set2.
      *
-     * @param set2 deuxi�me ensemble
+     * @param set2 deuxième ensemble
      */
     public void symmetricDifference(MySet set2) {
         if (this.equals(set2)) {
@@ -319,7 +322,7 @@ public class MySet extends List<SubSet> {
     /**
      * This devient l'intersection de this et set2.
      *
-     * @param set2 deuxi�me ensemble
+     * @param set2 deuxième ensemble
      */
     public void intersection(MySet set2) {
         if (this.equals(set2)) {
@@ -360,7 +363,7 @@ public class MySet extends List<SubSet> {
     /**
      * This devient l'union de this et set2.
      *
-     * @param set2 deuxi�me ensemble
+     * @param set2 deuxième ensemble
      */
     public void union(MySet set2) {
         Iterator<SubSet> it = this.iterator();
@@ -444,7 +447,7 @@ public class MySet extends List<SubSet> {
     }
 
     /**
-     * @param set2 deuxi�me ensemble
+     * @param set2 deuxième ensemble
      * @return true si this est inclus dans set2, false sinon
      */
     public boolean isIncludedIn(MySet set2) {
@@ -479,7 +482,7 @@ public class MySet extends List<SubSet> {
     // /////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Afficher les rangs pr�sents dans this.
+     * Afficher les rangs présents dans this.
      */
     public void printRanks() {
         System.out.println(" [version corrigee de rangs]");
@@ -505,8 +508,8 @@ public class MySet extends List<SubSet> {
     }
 
     /**
-     * Cr�er this � partir d'un fichier choisi par l'utilisateur contenant une
-     * s�quence d'entiers positifs termin�e par -1 (cf f0.ens, f1.ens, f2.ens,
+     * Créer this à partir d'un fichier choisi par l'utilisateur contenant une
+     * séquence d'entiers positifs terminée par -1 (cf f0.ens, f1.ens, f2.ens,
      * f3.ens et f4.ens).
      */
     public void restore() {
@@ -530,7 +533,7 @@ public class MySet extends List<SubSet> {
     }
 
     /**
-     * Sauvegarder this dans un fichier d'entiers positifs termin� par -1.
+     * Sauvegarder this dans un fichier d'entiers positifs terminé par -1.
      */
     public void save() {
         System.out.println(" [version corrigee de sauvegarde]");
@@ -550,7 +553,7 @@ public class MySet extends List<SubSet> {
     }
 
     /**
-     * @return l'ensemble this sous forme de cha�ne de caract�res.
+     * @return l'ensemble this sous forme de chaîne de caractères.
      */
     @Override
     public String toString() {
@@ -600,7 +603,7 @@ public class MySet extends List<SubSet> {
     }
 
     /**
-     * Afficher l'ensemble avec sa taille et les rangs pr�sents.
+     * Afficher l'ensemble avec sa taille et les rangs présents.
      */
     private void printNewState() {
         this.print(System.out);

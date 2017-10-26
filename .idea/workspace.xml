@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1f8d1484-b25e-436f-a9fa-c932f497035b" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/list-util.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/fr/istic/prg1/list/MySet.java" afterPath="$PROJECT_DIR$/src/fr/istic/prg1/list/MySet.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tp5.iml" afterPath="$PROJECT_DIR$/tp5.iml" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -28,7 +26,7 @@
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="48">
-              <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+              <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -37,8 +35,8 @@
       <file leaf-file-name="MySet.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/fr/istic/prg1/list/MySet.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="239">
-              <caret line="386" column="13" lean-forward="false" selection-start-line="386" selection-start-column="13" selection-end-line="386" selection-end-column="13" />
+            <state relative-caret-position="351">
+              <caret line="165" column="17" lean-forward="false" selection-start-line="165" selection-start-column="17" selection-end-line="165" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -287,7 +285,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1508955108588</updated>
-      <workItem from="1508955110010" duration="1857000" />
+      <workItem from="1508955110010" duration="2568000" />
     </task>
     <servers />
   </component>
@@ -295,9 +293,24 @@
     <history-entry file="TestMySet - 2017.10.26 at 12h 57m 13s.xml">
       <configuration name="TestMySet" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="TestMySet - 2017.10.26 at 13h 02m 21s.xml">
+      <configuration name="TestMySet" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestMySet - 2017.10.26 at 13h 13m 57s.xml">
+      <configuration name="TestMySet" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestMySet - 2017.10.26 at 13h 14m 02s.xml">
+      <configuration name="TestMySet" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestMySet - 2017.10.26 at 13h 14m 05s.xml">
+      <configuration name="TestMySet" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestMySet - 2017.10.26 at 13h 14m 08s.xml">
+      <configuration name="TestMySet" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1857000" />
+    <option name="totallyTimeSpent" value="2568000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -342,14 +355,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="48">
-          <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/fr/istic/prg1/list/test/TestMySet.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="223">
@@ -360,10 +365,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="48">
+          <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/fr/istic/prg1/list/MySet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="386" column="13" lean-forward="false" selection-start-line="386" selection-start-column="13" selection-end-line="386" selection-end-column="13" />
+        <state relative-caret-position="351">
+          <caret line="165" column="17" lean-forward="false" selection-start-line="165" selection-start-column="17" selection-end-line="165" selection-end-column="17" />
           <folding />
         </state>
       </provider>
