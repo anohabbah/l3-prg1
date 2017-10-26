@@ -222,7 +222,7 @@ public class MySet extends List<SubSet> {
         int cpt = 0;
 
         Iterator<SubSet> it = this.iterator();
-        while ( !it.isOnFlag() ) {
+        while (!it.isOnFlag()) {
             cpt += it.getValue().set.size();
             it.goForward();
         }
@@ -247,15 +247,15 @@ public class MySet extends List<SubSet> {
 
         Iterator<SubSet> it = this.iterator();
         Iterator<SubSet> it2 = set2.iterator();
-        while ( !it.isOnFlag() ) {
+        while (!it.isOnFlag()) {
             SubSet cur = it.getValue();
             SubSet cur2 = it2.getValue();
             switch (compare(cur.rank, cur2.rank)) {
-                case Comparison.INF:
+                case INF:
                     it.goForward();
                     break;
 
-                case Comparison.SUP:
+                case SUP:
                     it2.goForward();
                     break;
 
@@ -284,28 +284,33 @@ public class MySet extends List<SubSet> {
 
         Iterator<SubSet> it = this.iterator();
         Iterator<SubSet> it2 = set2.iterator();
-        while ( !it.isOnFlag() ) {
+        while (!it.isOnFlag()) {
             SubSet cur = it.getValue();
             SubSet cur2 = it2.getValue();
-            switch (compare())
-            if (cur.rank < cur2.rank) {
-                it.goForward();
-            } else if (cur.rank > cur2.rank) {
-                it.addLeft(cur2.clone());
-                it.goForward();
-                it2.goForward();
-            } else {
-                cur.set.symmetricDifference(cur2.set);
-                if (cur.set.isEmpty()) {
-                    it.remove();
-                } else {
+
+            switch (compare(cur.rank, cur2.rank)) {
+                case INF:
                     it.goForward();
-                }
-                it2.goForward();
+                    break;
+
+                case SUP:
+                    it.addLeft(cur2.clone());
+                    it.goForward();
+                    it2.goForward();
+                    break;
+
+                default:
+                    cur.set.symmetricDifference(cur2.set);
+                    if (cur.set.isEmpty()) {
+                        it.remove();
+                    } else {
+                        it.goForward();
+                    }
+                    it2.goForward();
             }
         }
 
-        while ( !it2.isOnFlag() ) {
+        while (!it2.isOnFlag()) {
             it.addLeft(it2.getValue());
             it2.goForward();
         }
@@ -323,25 +328,31 @@ public class MySet extends List<SubSet> {
 
         Iterator<SubSet> it = this.iterator();
         Iterator<SubSet> it2 = set2.iterator();
-        while ( !it.isOnFlag() ) {
+        while (!it.isOnFlag()) {
             SubSet cur = it.getValue();
             SubSet cur2 = it2.getValue();
-            if (cur.rank < cur2.rank) {
-                it.remove();
-            } else if (cur.rank > cur2.rank) {
-                it2.goForward();
-            } else {
-                cur.set.intersection(cur2.set.clone());
-                if (cur.set.isEmpty()) {
+
+            switch (compare(cur.rank, cur2.rank)) {
+                case INF:
                     it.remove();
-                } else {
-                    it.goForward();
-                }
-                it2.goForward();
+                    break;
+
+                case SUP:
+                    it2.goForward();
+                    break;
+
+                default:
+                    cur.set.intersection(cur2.set);
+                    if (cur.set.isEmpty()) {
+                        it.remove();
+                    } else {
+                        it.goForward();
+                    }
+                    it2.goForward();
             }
         }
 
-        while ( !it.isOnFlag() ) {
+        while (!it.isOnFlag()) {
             it.remove();
         }
     }
@@ -354,35 +365,41 @@ public class MySet extends List<SubSet> {
     public void union(MySet set2) {
         Iterator<SubSet> it = this.iterator();
         Iterator<SubSet> it2 = set2.iterator();
-        while ( !it.isOnFlag() ) {
+        while (!it.isOnFlag()) {
             SubSet cur = it.getValue();
             SubSet cur2 = it2.getValue();
-            if (cur.rank < cur2.rank) {
-                it.goForward();
-            } else if (cur.rank > cur2.rank) {
-                it.addLeft(cur2.clone());
-                it.goForward();
-                it2.goForward();
-            } else {
-                cur.set.union(cur2.set.clone());
-                it.goForward();
-                it2.goForward();
+
+            switch (compare(cur.rank, cur2.rank)) {
+                case INF:
+                    it.goForward();
+                    break;
+
+                case SUP:
+                    it.addLeft(cur2.clone());
+                    it.goForward();
+                    it2.goForward();
+                    break;
+
+                default:
+                    cur.set.union(cur2.set);
+                    it.goForward();
+                    it2.goForward();
             }
         }
 
-        while ( ! it2.isOnFlag() ) {
+        while (!it2.isOnFlag()) {
             this.addTail(it2.getValue().clone());
             it2.goForward();
         }
     }
 
     // /////////////////////////////////////////////////////////////////////////////
-    // /////////////////// Egalit�, Inclusion ////////////////////
+    // /////////////////// Egalité, Inclusion ////////////////////
     // /////////////////////////////////////////////////////////////////////////////
 
     /**
-     * @param o deuxi�me ensemble
-     * @return true si les ensembles this et o sont �gaux, false sinon
+     * @param o deuxième ensemble
+     * @return true si les ensembles this et o sont égaux, false sinon
      */
     @Override
     public boolean equals(Object o) {
@@ -396,23 +413,33 @@ public class MySet extends List<SubSet> {
         } else {
             Iterator<SubSet> it = this.iterator();
             Iterator<SubSet> it2 = ((MySet) o).iterator();
-            while ( !it.isOnFlag() && b ) {
+            while (!it.isOnFlag() && b) {
                 SubSet cur = it.getValue();
                 SubSet cur2 = it2.getValue();
-                if (cur.rank < cur2.rank) {
-                    b = false;
-                } else if (cur.rank > cur2.rank) {
-                    b = false;
-                } else {
-                    if (!cur.set.equals(cur2.set)) {
+
+                switch (compare(cur.rank, cur2.rank)) {
+                    case INF:
                         b = false;
-                    }
-                    it.goForward();
-                    it2.goForward();
+                        break;
+
+                    case SUP:
+                        b = false;
+                        break;
+
+                    default:
+                        if (!cur.set.equals(cur2.set)) {
+                            b = false;
+                        }
+
+                        it.goForward();
+                        it2.goForward();
                 }
             }
+
+            // Il faut s'assurer que les 2 iterateurs sont sur leur drapeaux respectifs
             b = b && it.isOnFlag() && it2.isOnFlag();
         }
+
         return b;
     }
 
@@ -427,7 +454,7 @@ public class MySet extends List<SubSet> {
 
         Iterator<SubSet> it = this.iterator();
         Iterator<SubSet> it2 = set2.iterator();
-        while ( !it.isOnFlag() && b) {
+        while (!it.isOnFlag() && b) {
             SubSet cur = it.getValue();
             SubSet cur2 = it2.getValue();
 
