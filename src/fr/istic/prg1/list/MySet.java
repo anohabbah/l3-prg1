@@ -374,35 +374,38 @@ public class MySet extends List<SubSet> {
      * @param set2 deuxième ensemble
      */
     public void union(MySet set2) {
-        Iterator<SubSet> it = this.iterator();
-        Iterator<SubSet> it2 = set2.iterator();
-        while (!it.isOnFlag()) {
-            SubSet cur = it.getValue();
-            SubSet cur2 = it2.getValue();
+        if (!this.equals(set2)) {
+            Iterator<SubSet> it = this.iterator();
+            Iterator<SubSet> it2 = set2.iterator();
 
-            switch (MySet.compare(cur.rank, cur2.rank)) {
-                case INF:
-                    it.goForward();
-                    break;
+            while (!it.isOnFlag()) {
+                SubSet cur = it.getValue();
+                SubSet cur2 = it2.getValue();
 
-                case SUP:
-                    it.addLeft(cur2.clone());
-                    it.goForward();
-                    it2.goForward();
-                    break;
+                switch (MySet.compare(cur.rank, cur2.rank)) {
+                    case INF:
+                        it.goForward();
+                        break;
 
-                default:
-                    cur.set.union(cur2.set);
-                    it.goForward();
-                    it2.goForward();
+                    case SUP:
+                        it.addLeft(cur2.clone());
+                        it.goForward();
+                        it2.goForward();
+                        break;
+
+                    default:
+                        cur.set.union(cur2.set);
+                        it.goForward();
+                        it2.goForward();
+                }
             }
-        }
 
-        // Il peut arriver que this ait été parcouru entièrement, mais ce n'est pas le cas de set2.
-        // Dans ce cas là, il faut ajouter tout ce qui reste de set2 à la fin de this.
-        while (!it2.isOnFlag()) {
-            this.addTail(it2.getValue().clone());
-            it2.goForward();
+            // Il peut arriver que this ait été parcouru entièrement, mais ce n'est pas le cas de set2.
+            // Dans ce cas là, il faut ajouter tout ce qui reste de set2 à la fin de this.
+            while (!it2.isOnFlag()) {
+                this.addTail(it2.getValue().clone());
+                it2.goForward();
+            }
         }
     }
 
