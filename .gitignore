@@ -1,3 +1,7 @@
 /.idea
+/.settings
 /out
-tp5.iml
+/bin
+*.iml
+.classpath
+.project
