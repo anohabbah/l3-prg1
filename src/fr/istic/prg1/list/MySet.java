@@ -143,27 +143,27 @@ public class MySet extends List<SubSet> {
             int rank = value / 256;
             int element = value % 256;
 
-            if (this.isEmpty()) {
-                SmallSet s = new SmallSet();
-                s.add(element);
-                this.addTail(new SubSet(rank, s));
-            } else {
-                Iterator<SubSet> it = this.iterator();
-                SubSet cur = it.getValue();
-                while (cur.rank < rank) {
-                    cur = it.nextValue();
-                }
+            Iterator<SubSet> it = this.iterator();
+            SubSet cur = it.getValue();
+            while (MySet.compare(cur.rank, rank) == Comparison.INF && !it.isOnFlag()) {
+                cur = it.nextValue();
+            }
 
-                switch (MySet.compare(cur.rank, rank)) {
-                    case EGAL:
-                        cur.set.add(element);
-                        break;
+            switch (MySet.compare(cur.rank, rank)) {
+                case EGAL:
+                    cur.set.add(element);
+                    break;
 
-                    default:
-                        SmallSet set = new SmallSet();
-                        set.add(element);
-                        it.addLeft(new SubSet(rank, set));
-                }
+                case SUP:
+                    SmallSet set = new SmallSet();
+                    set.add(element);
+                    it.addLeft(new SubSet(rank, set));
+                    break;
+
+                default: // this est vide
+                    SmallSet s = new SmallSet();
+                    s.add(element);
+                    this.addTail(new SubSet(rank, s));
             }
         }
     }
@@ -205,10 +205,11 @@ public class MySet extends List<SubSet> {
         if ((value >= 0 && value <= 32767) && this.contains(value)) {
             Iterator<SubSet> it = this.iterator();
             SubSet cur = it.getValue();
-            while (cur.rank < value / 256 && !it.isOnFlag()) {
+            while (MySet.compare(cur.rank, value / 256) == Comparison.INF && !it.isOnFlag()) {
                 cur = it.nextValue();
             }
-            // value appartenant à this, à la fin de boucle on a cur.rank == value / 256
+
+            // value appartenant à this, à la fin de boucle, cur.rank == value / 256
             cur.set.remove(value % 256);
             if (cur.set.isEmpty()) {
                 it.remove();
@@ -251,8 +252,10 @@ public class MySet extends List<SubSet> {
         Iterator<SubSet> it = this.iterator();
         Iterator<SubSet> it2 = set2.iterator();
         while (!it.isOnFlag()) {
+
             SubSet cur = it.getValue();
             SubSet cur2 = it2.getValue();
+
             switch (MySet.compare(cur.rank, cur2.rank)) {
                 case INF:
                     it.goForward();
@@ -313,6 +316,8 @@ public class MySet extends List<SubSet> {
             }
         }
 
+        // Il peut arriver que this ait été parcouru entièrement, mais ce n'est pas le cas de set2.
+        // Dans ce cas là, il faut ajouter tout ce qui reste de set2 à this.
         while (!it2.isOnFlag()) {
             it.addLeft(it2.getValue());
             it2.goForward();
@@ -331,6 +336,7 @@ public class MySet extends List<SubSet> {
 
         Iterator<SubSet> it = this.iterator();
         Iterator<SubSet> it2 = set2.iterator();
+
         while (!it.isOnFlag()) {
             SubSet cur = it.getValue();
             SubSet cur2 = it2.getValue();
@@ -355,6 +361,8 @@ public class MySet extends List<SubSet> {
             }
         }
 
+        // Il peut arriver que set2 ait été parcouru entièrement, mais ce n'est pas le cas de this.
+        // Dans ce cas là, tout ce qui reste de this ne fait pas partir de l'intersection donc il faut les retirer.
         while (!it.isOnFlag()) {
             it.remove();
         }
@@ -390,6 +398,8 @@ public class MySet extends List<SubSet> {
             }
         }
 
+        // Il peut arriver que this ait été parcouru entièrement, mais ce n'est pas le cas de set2.
+        // Dans ce cas là, il faut ajouter tout ce qui reste de set2 à la fin de this.
         while (!it2.isOnFlag()) {
             this.addTail(it2.getValue().clone());
             it2.goForward();
@@ -439,7 +449,8 @@ public class MySet extends List<SubSet> {
                 }
             }
 
-            // Il faut s'assurer que les 2 iterateurs sont sur leur drapeaux respectifs
+            // This et set2 sont égaux si et seulement ils ont exactement les mêmes éléments et
+            // que à la fin de la boucle les 2 itérateurs sont sur leurs drapeaux respectifs.
             b = b && it.isOnFlag() && it2.isOnFlag();
         }
 
