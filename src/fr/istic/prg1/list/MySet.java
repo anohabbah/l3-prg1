@@ -221,8 +221,6 @@ public class MySet extends List<SubSet> {
      * @return taille de l'ensemble this
      */
     public int size() {
-//        if (this.isEmpty()) return 0;
-
         int cpt = 0;
 
         Iterator<SubSet> it = this.iterator();
@@ -246,33 +244,32 @@ public class MySet extends List<SubSet> {
     public void difference(MySet set2) {
         if (this.equals(set2)) {
             this.clear();
-            return;
-        }
+        } else {
+            Iterator<SubSet> it = this.iterator();
+            Iterator<SubSet> it2 = set2.iterator();
+            while (!it.isOnFlag()) {
 
-        Iterator<SubSet> it = this.iterator();
-        Iterator<SubSet> it2 = set2.iterator();
-        while (!it.isOnFlag()) {
+                SubSet cur = it.getValue();
+                SubSet cur2 = it2.getValue();
 
-            SubSet cur = it.getValue();
-            SubSet cur2 = it2.getValue();
-
-            switch (MySet.compare(cur.rank, cur2.rank)) {
-                case INF:
-                    it.goForward();
-                    break;
-
-                case SUP:
-                    it2.goForward();
-                    break;
-
-                default:
-                    cur.set.difference(cur2.set);
-                    if (cur.set.isEmpty()) {
-                        it.remove();
-                    } else {
+                switch (MySet.compare(cur.rank, cur2.rank)) {
+                    case INF:
                         it.goForward();
-                    }
-                    it2.goForward();
+                        break;
+
+                    case SUP:
+                        it2.goForward();
+                        break;
+
+                    default:
+                        cur.set.difference(cur2.set);
+                        if (cur.set.isEmpty()) {
+                            it.remove();
+                        } else {
+                            it.goForward();
+                        }
+                        it2.goForward();
+                }
             }
         }
     }
@@ -285,42 +282,41 @@ public class MySet extends List<SubSet> {
     public void symmetricDifference(MySet set2) {
         if (this.equals(set2)) {
             this.clear();
-            return;
-        }
+        } else {
+            Iterator<SubSet> it = this.iterator();
+            Iterator<SubSet> it2 = set2.iterator();
+            while (!it.isOnFlag()) {
+                SubSet cur = it.getValue();
+                SubSet cur2 = it2.getValue();
 
-        Iterator<SubSet> it = this.iterator();
-        Iterator<SubSet> it2 = set2.iterator();
-        while (!it.isOnFlag()) {
-            SubSet cur = it.getValue();
-            SubSet cur2 = it2.getValue();
-
-            switch (MySet.compare(cur.rank, cur2.rank)) {
-                case INF:
-                    it.goForward();
-                    break;
-
-                case SUP:
-                    it.addLeft(cur2.clone());
-                    it.goForward();
-                    it2.goForward();
-                    break;
-
-                default:
-                    cur.set.symmetricDifference(cur2.set);
-                    if (cur.set.isEmpty()) {
-                        it.remove();
-                    } else {
+                switch (MySet.compare(cur.rank, cur2.rank)) {
+                    case INF:
                         it.goForward();
-                    }
-                    it2.goForward();
-            }
-        }
+                        break;
 
-        // Il peut arriver que this ait été parcouru entièrement, mais ce n'est pas le cas de set2.
-        // Dans ce cas là, il faut ajouter tout ce qui reste de set2 à this.
-        while (!it2.isOnFlag()) {
-            it.addLeft(it2.getValue());
-            it2.goForward();
+                    case SUP:
+                        it.addLeft(cur2.clone());
+                        it.goForward();
+                        it2.goForward();
+                        break;
+
+                    default:
+                        cur.set.symmetricDifference(cur2.set);
+                        if (cur.set.isEmpty()) {
+                            it.remove();
+                        } else {
+                            it.goForward();
+                        }
+                        it2.goForward();
+                }
+            }
+
+            // Il peut arriver que this ait été parcouru entièrement, mais ce n'est pas le cas de set2.
+            // Dans ce cas là, il faut ajouter tout ce qui reste de set2 à this.
+            while (!it2.isOnFlag()) {
+                it.addLeft(it2.getValue());
+                it2.goForward();
+            }
         }
     }
 
@@ -330,41 +326,39 @@ public class MySet extends List<SubSet> {
      * @param set2 deuxième ensemble
      */
     public void intersection(MySet set2) {
-        if (this.equals(set2)) {
-            return;
-        }
+        if (!this.equals(set2)) {
+            Iterator<SubSet> it = this.iterator();
+            Iterator<SubSet> it2 = set2.iterator();
 
-        Iterator<SubSet> it = this.iterator();
-        Iterator<SubSet> it2 = set2.iterator();
+            while (!it.isOnFlag()) {
+                SubSet cur = it.getValue();
+                SubSet cur2 = it2.getValue();
 
-        while (!it.isOnFlag()) {
-            SubSet cur = it.getValue();
-            SubSet cur2 = it2.getValue();
-
-            switch (MySet.compare(cur.rank, cur2.rank)) {
-                case INF:
-                    it.remove();
-                    break;
-
-                case SUP:
-                    it2.goForward();
-                    break;
-
-                default:
-                    cur.set.intersection(cur2.set);
-                    if (cur.set.isEmpty()) {
+                switch (MySet.compare(cur.rank, cur2.rank)) {
+                    case INF:
                         it.remove();
-                    } else {
-                        it.goForward();
-                    }
-                    it2.goForward();
-            }
-        }
+                        break;
 
-        // Il peut arriver que set2 ait été parcouru entièrement, mais ce n'est pas le cas de this.
-        // Dans ce cas là, tout ce qui reste de this ne fait pas partir de l'intersection donc il faut les retirer.
-        while (!it.isOnFlag()) {
-            it.remove();
+                    case SUP:
+                        it2.goForward();
+                        break;
+
+                    default:
+                        cur.set.intersection(cur2.set);
+                        if (cur.set.isEmpty()) {
+                            it.remove();
+                        } else {
+                            it.goForward();
+                        }
+                        it2.goForward();
+                }
+            }
+
+            // Il peut arriver que set2 ait été parcouru entièrement, mais ce n'est pas le cas de this.
+            // Dans ce cas là, tout ce qui reste de this ne fait pas partir de l'intersection donc il faut les retirer.
+            while (!it.isOnFlag()) {
+                it.remove();
+            }
         }
     }
 
@@ -465,7 +459,7 @@ public class MySet extends List<SubSet> {
      * @return true si this est inclus dans set2, false sinon
      */
     public boolean isIncludedIn(MySet set2) {
-        if (this.equals(set2)) return true;
+        if (this == set2) return true;
 
         boolean b = true;
 
@@ -475,17 +469,22 @@ public class MySet extends List<SubSet> {
             SubSet cur = it.getValue();
             SubSet cur2 = it2.getValue();
 
-            if (cur.rank < cur2.rank) {
-                b = false;
-            } else if (cur.rank > cur2.rank) {
-                it2.goForward();
-            } else {
-                if (!cur.set.isIncludedIn(cur2.set)) {
+            switch (MySet.compare(cur.rank, cur2.rank)) {
+                case INF:
                     b = false;
-                }
+                    break;
 
-                it.goForward();
-                it2.goForward();
+                case SUP:
+                    it2.goForward();
+                    break;
+
+                default:
+                    if (!cur.set.isIncludedIn(cur2.set)) {
+                        b = false;
+                    }
+
+                    it.goForward();
+                    it2.goForward();
             }
         }
         return b;
