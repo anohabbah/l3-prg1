@@ -28,8 +28,7 @@ public class MySet extends List<SubSet> {
     /**
      * Sous-ensemble de rang maximal à mettre dans le drapeau de la liste.
      */
-    private static final SubSet FLAG_VALUE = new SubSet(MAX_RANG,
-            new SmallSet());
+    private static final SubSet FLAG_VALUE = new SubSet(MAX_RANG, new SmallSet());
     /**
      * Entrée standard.
      */
@@ -90,11 +89,8 @@ public class MySet extends List<SubSet> {
         if (value < 0 || value > 32767) {
             return false;
         }
-
-        if (this.isEmpty()) {
-            return false;
-        }
-
+        
+        
         int rank = value / 256;
         Iterator<SubSet> it = this.iterator();
         SubSet cur = it.getValue();
@@ -139,7 +135,7 @@ public class MySet extends List<SubSet> {
      * @param value valuer à ajouter.
      */
     public void addNumber(int value) {
-        if ((value >= 0 && value <= 32767) && !this.contains(value)) {
+        if ((value >= 0 && value <= 32767)) {
             int rank = value / 256;
             int element = value % 256;
 
@@ -404,7 +400,7 @@ public class MySet extends List<SubSet> {
     }
 
     // /////////////////////////////////////////////////////////////////////////////
-    // /////////////////// Egalité, Inclusion ////////////////////
+    // /////////////////// 			Egalité, Inclusion 			////////////////////
     // /////////////////////////////////////////////////////////////////////////////
 
     /**
@@ -491,7 +487,7 @@ public class MySet extends List<SubSet> {
     }
 
     // /////////////////////////////////////////////////////////////////////////////
-    // //////// Rangs, Restauration, Sauvegarde, Affichage //////////////
+    // //////// 		Rangs, Restauration, Sauvegarde, Affichage 	  //////////////
     // /////////////////////////////////////////////////////////////////////////////
 
     /**
@@ -639,7 +635,7 @@ public class MySet extends List<SubSet> {
     }
 
     /**
-     * @return nom de fichier saisi psar l'utilisateur
+     * @return nom de fichier saisi par l'utilisateur
      */
     private static String readFileName() {
         System.out.print(" nom du fichier : ");
