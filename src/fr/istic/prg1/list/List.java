@@ -3,127 +3,173 @@ package fr.istic.prg1.list;
 import fr.istic.prg1.list.util.*;
 
 public class List<T extends SuperT> {
-	// liste en double chainage par references
+    // liste en double chainage par references
 
-	private class Element {
-		// element de List<Item> : (Item, Element, Element)
-		public T value;
-		public Element left, right;
+    private class Element {
+        // element de List<Item> : (Item, Element, Element)
+        public T value;
+        public Element left, right;
 
-		public Element() {
-			value = null;
-			left = null;
-			right = null;
-		}
-	} // class Element
+        public Element() {
+            value = null;
+            left = null;
+            right = null;
+        }
+    } // class Element
 
-	public class ListIterator implements Iterator<T> {
-		private Element current;
+    public class ListIterator implements Iterator<T> {
+        private Element current;
 
-		private ListIterator() {
-		}
+        private ListIterator() {
+            this.current = flag.right;
+        }
 
-		@Override
-		public void goForward() {
-		}
+        @Override
+        public void goForward() {
+            try {
+                assert this.current.right != null : "Impossible d'avancer, le voisin droit n'existe pas.";
+            } catch (AssertionError e) {
+                e.printStackTrace();
+                System.exit(0);
+            }
 
-		@Override
-		public void goBackward() {
-		}
+            this.current = this.current.right;
+        }
 
-		@Override
-		public void restart() {
-		}
+        @Override
+        public void goBackward() {
+            try {
+                assert this.current.left != null : "Impossible d'avancer, le voisin de gauche n'existe pas.";
+            } catch (AssertionError e) {
+                e.printStackTrace();
+                System.exit(0);
+            }
 
-		@Override
-		public boolean isOnFlag() {
-			return false;
-		}
+            this.current = this.current.left;
+        }
 
-		@Override
-		public void remove() {
-			try {
-				assert current != flag : "\n\n\nimpossible de retirer le drapeau\n\n\n";
-			} catch (AssertionError e) {
-				e.printStackTrace();
-				System.exit(0);
-			}
-		}
+        @Override
+        public void restart() {
+            this.current = flag.right;
+        }
 
-		@Override
-		public T getValue() {
-			return null;
-		}
+        @Override
+        public boolean isOnFlag() {
+            return this.current == flag;
+        }
 
-		@Override
-		public T nextValue() {
-			return null;
-		}
+        @Override
+        public void remove() {
+            try {
+                assert this.current != flag : "\n\n\nimpossible de retirer le drapeau\n\n\n";
+            } catch (AssertionError e) {
+                e.printStackTrace();
+                System.exit(0);
+            }
 
-		@Override
-		public void addLeft(T v) {
-		}
+            Element temp = this.current;
+            Element right = this.current.right;
+            Element left = this.current.left;
+            right.left = left;
+            left.right = right;
+            this.current = this.current.right;
+            temp.left = null;
+            temp.right = null;
+        }
 
-		@Override
-		public void addRight(T v) {
-		}
+        @Override
+        public T getValue() {
+            return this.current.value;
+        }
 
-		@Override
-		public void setValue(T v) {
-		}
+        @Override
+        public T nextValue() {
+            try {
+                assert this.current.right != null : "Impossible d'avancer, le voisin de droite n'existe pas.";
+            } catch (AssertionError e) {
+                e.printStackTrace();
+                System.exit(0);
+            }
 
-		@Override
-		public String toString() {
-			return "parcours de liste : pas d'affichage possible \n";
-		}
+            this.goForward();
+            return this.getValue();
+        }
 
-	} // class IterateurListe
+        @Override
+        public void addLeft(T v) {}
 
-	private Element flag;
+        @Override
+        public void addRight(T v) {
+        }
 
-	public List() {
-	}
+        @Override
+        public void setValue(T v) {
+        }
 
-	public ListIterator iterator() {
-		return null;
-	}
+        @Override
+        public String toString() {
+            return "parcours de liste : pas d'affichage possible \n";
+        }
 
-	public boolean isEmpty() {
-		return false;
-	}
+    } // class IterateurListe
 
-	public void clear() {
-	}
+    private Element flag;
 
-	public void setFlag(T v) {
-	}
+    public List() {
+        this.flag.left = null;
+        this.flag.value = null;
+        this.flag.right = null;
+    }
 
-	public void addHead(T v) {
-	}
+    public ListIterator iterator() {
+        return new ListIterator();
+    }
 
-	public void addTail(T v) {
-	}
+    public boolean isEmpty() {
+        return this.flag.left == this.flag;
+    }
 
-	@SuppressWarnings("unchecked")
-	public List<T> clone() {
-		List<T> nouvListe = new List<T>();
-		ListIterator p = iterator();
-		while (!p.isOnFlag()) {
-			nouvListe.addTail((T) p.getValue().clone());
-			// UNE COPIE EST NECESSAIRE !!!
-			p.goForward();
-		}
-		return nouvListe;
-	}
+    public void clear() {
+        this.flag.left = this.flag;
+        this.flag.right = this.flag;
+    }
 
-	@Override
-	public String toString() {
-		String s = "contenu de la liste : \n";
-		ListIterator p = iterator();
-		while (!p.isOnFlag()) {
-			s = s + p.getValue().toString() + " ";
-			p.goForward();
-		}
-		return s;
-	}
+    public void setFlag(T v) {
+        this.flag.value = v;
+    }
+
+    public void addHead(T v) {
+        List.ListIterator it = this.iterator();
+        it.addLeft(v);
+    }
+
+    public void addTail(T v) {
+        List.ListIterator it = this.iterator();
+        it.goBackward();
+        it.addLeft(v);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<T> clone() {
+        List<T> nouvListe = new List<T>();
+        ListIterator p = this.iterator();
+
+        while (!p.isOnFlag()) {
+            nouvListe.addTail((T) p.getValue().clone());
+            p.goForward();
+        }
+
+        return nouvListe;
+    }
+
+    @Override
+    public String toString() {
+        String s = "contenu de la liste : \n";
+        ListIterator p = iterator();
+        while (!p.isOnFlag()) {
+            s = s + p.getValue().toString() + " ";
+            p.goForward();
+        }
+        return s;
+    }
 }
