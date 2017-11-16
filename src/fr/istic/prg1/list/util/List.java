@@ -1,6 +1,4 @@
-package fr.istic.prg1.list;
-
-import fr.istic.prg1.list.util.*;
+package fr.istic.prg1.list.util;
 
 public class List<T extends SuperT> {
     // liste en double chainage par references
@@ -27,7 +25,7 @@ public class List<T extends SuperT> {
         @Override
         public void goForward() {
             try {
-                assert this.current.right != null : "Impossible d'avancer, le voisin droit n'existe pas.";
+                assert this.current.right != null : "Attention! Voisin droit inexistant.";
             } catch (AssertionError e) {
                 e.printStackTrace();
                 System.exit(0);
@@ -39,7 +37,7 @@ public class List<T extends SuperT> {
         @Override
         public void goBackward() {
             try {
-                assert this.current.left != null : "Impossible d'avancer, le voisin de gauche n'existe pas.";
+                assert this.current.left != null : "Attention! Voisin gauche inexistant.";
             } catch (AssertionError e) {
                 e.printStackTrace();
                 System.exit(0);
@@ -68,10 +66,10 @@ public class List<T extends SuperT> {
             }
 
             Element temp = this.current;
-            Element right = this.current.right;
-            Element left = this.current.left;
-            right.left = left;
-            left.right = right;
+            Element voisinDroit = this.current.right;
+            Element voisinGauche = this.current.left;
+            voisinDroit.left = voisinGauche;
+            voisinGauche.right = voisinDroit;
             this.current = this.current.right;
             temp.left = null;
             temp.right = null;
@@ -85,7 +83,7 @@ public class List<T extends SuperT> {
         @Override
         public T nextValue() {
             try {
-                assert this.current.right != null : "Impossible d'avancer, le voisin de droite n'existe pas.";
+                assert this.current.right != null : "Attention! pas de voisin de droite.";
             } catch (AssertionError e) {
                 e.printStackTrace();
                 System.exit(0);
@@ -96,14 +94,32 @@ public class List<T extends SuperT> {
         }
 
         @Override
-        public void addLeft(T v) {}
+        public void addLeft(T v) {
+            Element voisinGauche = this.current.left;
+            Element voisinDroit = this.current;
+            this.current = new Element();
+            this.current.value = v;
+            this.current.left = voisinGauche;
+            this.current.right = voisinDroit;
+            voisinGauche.right = this.current;
+            voisinDroit.left = this.current;
+        }
 
         @Override
         public void addRight(T v) {
+            Element voisinDroit = this.current.right;
+            Element voisinGauche = this.current;
+            this.current = new Element();
+            this.current.value = v;
+            this.current.left = voisinGauche;
+            this.current.right = voisinDroit;
+            voisinDroit.left = this.current;
+            voisinGauche.right = this.current;
         }
 
         @Override
         public void setValue(T v) {
+            this.current.value = v;
         }
 
         @Override
@@ -116,9 +132,9 @@ public class List<T extends SuperT> {
     private Element flag;
 
     public List() {
-        this.flag.left = null;
-        this.flag.value = null;
-        this.flag.right = null;
+        this.flag = new Element();
+        this.flag.left = this.flag;
+        this.flag.right = this.flag;
     }
 
     public ListIterator iterator() {
@@ -139,27 +155,26 @@ public class List<T extends SuperT> {
     }
 
     public void addHead(T v) {
-        List.ListIterator it = this.iterator();
+        ListIterator it = this.iterator();
         it.addLeft(v);
     }
 
     public void addTail(T v) {
-        List.ListIterator it = this.iterator();
+        ListIterator it = this.iterator();
         it.goBackward();
         it.addLeft(v);
     }
 
-    @SuppressWarnings("unchecked")
     public List<T> clone() {
-        List<T> nouvListe = new List<T>();
+        List<T> list = new List<T>();
         ListIterator p = this.iterator();
 
         while (!p.isOnFlag()) {
-            nouvListe.addTail((T) p.getValue().clone());
+            list.addTail((T) p.getValue().clone());
             p.goForward();
         }
 
-        return nouvListe;
+        return list;
     }
 
     @Override
