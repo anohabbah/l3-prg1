@@ -221,7 +221,7 @@ public class SmallSet {
 
 		// this est égal à obj si les éléments de this et de obj sont identiques.
 		// Il suffit de trouver un élément de this (ou obj) qui n'appartient pas à obj (ou this)
-		for (int i = 0; i < SmallSet.setSize && isEqualTo; i++) {
+		for (int i = 0; i < SmallSet.setSize; i++) {
 			if ((this.contains(i) && !((SmallSet) obj).contains(i)) || (!this.contains(i) && ((SmallSet) obj).contains(i))) {
 						return false;
 			}
