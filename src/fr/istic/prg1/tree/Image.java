@@ -79,9 +79,7 @@ public class Image extends AbstractImage {
     }
 
     private void affectAux(Iterator<Node> it, Iterator<Node> it2) {
-        // Une feuille a un état de 0 ou 1. La condition d'après ne sera pas verifiée.
-        // Donc impossible que nous atteignons un sentinel.
-        it.addValue(it2.getValue());
+        it.addValue(Node.valueOf(it2.getValue().state));
     if (it2.nodeType() != NodeType.LEAF) {
             it2.goLeft();
             it.goLeft();
@@ -104,11 +102,25 @@ public class Image extends AbstractImage {
      */
     @Override
     public void rotate180(AbstractImage image2) {
-        System.out.println();
-        System.out.println("-------------------------------------------------");
-        System.out.println("Fonction � �crire");
-        System.out.println("-------------------------------------------------");
-        System.out.println();
+        Iterator<Node> it = this.iterator();
+        it.clear();
+        this.rotate180Aux(it, image2.iterator());
+    }
+
+    private void rotate180Aux(Iterator<Node> it1, Iterator<Node> it2) {
+        it1.addValue(Node.valueOf(it2.getValue().state));
+        if (it2.nodeType() != NodeType.LEAF) {
+            it1.goRight();
+            it2.goLeft();
+            this.rotate180Aux(it1, it2);
+            it1.goUp();
+            it2.goUp();
+            it1.goLeft();
+            it2.goRight();
+            this.rotate180Aux(it1, it2);
+            it1.goUp();
+            it2.goUp();
+        }
     }
 
     /**
