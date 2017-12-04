@@ -82,7 +82,7 @@ public class Image extends AbstractImage {
         // Une feuille a un état de 0 ou 1. La condition d'après ne sera pas verifiée.
         // Donc impossible que nous atteignons un sentinel.
         it.addValue(it2.getValue());
-        if (it2.getValue().state == 2) {
+    if (it2.nodeType() != NodeType.LEAF) {
             it2.goLeft();
             it.goLeft();
             this.affectAux(it, it2);
@@ -134,11 +134,21 @@ public class Image extends AbstractImage {
      */
     @Override
     public void videoInverse() {
-        System.out.println();
-        System.out.println("-------------------------------------------------");
-        System.out.println("Fonction � �crire");
-        System.out.println("-------------------------------------------------");
-        System.out.println();
+        this.videoInverseAux(this.iterator());
+    }
+
+    private void videoInverseAux(Iterator<Node> it) {
+        int state = it.getValue().state == 1 ? 0 : (it.getValue().state == 0 ? 1 : it.getValue().state);
+        it.setValue(Node.valueOf(state));
+
+        if (it.nodeType() != NodeType.LEAF) {
+            it.goLeft();
+            this.videoInverseAux(it);
+            it.goUp();
+            it.goRight();
+            this.videoInverseAux(it);
+            it.goUp();
+        }
     }
 
     /**
