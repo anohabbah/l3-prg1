@@ -1,11 +1,11 @@
 package fr.istic.prg1.tree;
 
-import java.util.Scanner;
-
 import fr.istic.prg1.tree.util.AbstractImage;
 import fr.istic.prg1.tree.util.Iterator;
 import fr.istic.prg1.tree.util.Node;
 import fr.istic.prg1.tree.util.NodeType;
+
+import java.util.Scanner;
 
 /**
  * @author Mickaël Foursov <foursov@univ-rennes1.fr>
@@ -38,7 +38,7 @@ public class Image extends AbstractImage {
         int depth = 0;
         int upperX = 0, upperY = 0;
         int width = 256;
-        int height = 0;
+        int height;
 
         Iterator<Node> it = this.iterator();
         while (it.nodeType() != NodeType.LEAF) {
@@ -80,7 +80,7 @@ public class Image extends AbstractImage {
 
     private void affectAux(Iterator<Node> it, Iterator<Node> it2) {
         it.addValue(Node.valueOf(it2.getValue().state));
-    if (it2.nodeType() != NodeType.LEAF) {
+        if (it2.nodeType() != NodeType.LEAF) {
             it2.goLeft();
             it.goLeft();
             this.affectAux(it, it2);
@@ -171,11 +171,38 @@ public class Image extends AbstractImage {
      */
     @Override
     public void mirrorV(AbstractImage image2) {
-        System.out.println();
-        System.out.println("-------------------------------------------------");
-        System.out.println("Fonction � �crire");
-        System.out.println("-------------------------------------------------");
-        System.out.println();
+        Iterator<Node> it = this.iterator();
+        it.clear();
+        this.mirrorVAux(it, image2.iterator(), 0);
+    }
+
+    private void mirrorVAux(Iterator<Node> it1, Iterator<Node> it2, int i) {
+        it1.addValue(Node.valueOf(it2.getValue().state));
+        if (it2.nodeType() != NodeType.LEAF) {
+            it2.goLeft();
+            if (i % 2 == 1) {
+                it1.goLeft();
+            } else {
+                it1.goRight();
+            }
+            this.mirrorVAux(it1, it2, ++i);
+
+            it1.goUp();
+            it2.goUp();
+            --i;
+
+            it2.goRight();
+            if (i % 2 == 1) {
+                it1.goRight();
+            } else {
+                it1.goLeft();
+            }
+            this.mirrorVAux(it1, it2, ++i);
+
+            it1.goUp();
+            it2.goUp();
+            --i;
+        }
     }
 
     /**
@@ -186,11 +213,38 @@ public class Image extends AbstractImage {
      */
     @Override
     public void mirrorH(AbstractImage image2) {
-        System.out.println();
-        System.out.println("-------------------------------------------------");
-        System.out.println("Fonction � �crire");
-        System.out.println("-------------------------------------------------");
-        System.out.println();
+        Iterator<Node> it = this.iterator();
+        it.clear();
+        this.mirrorHAux(it, image2.iterator(), 0);
+    }
+
+    private void mirrorHAux(Iterator<Node> it1, Iterator<Node> it2, int i) {
+        it1.addValue(Node.valueOf(it2.getValue().state));
+        if (it2.nodeType() != NodeType.LEAF) {
+            it2.goLeft();
+            if (i % 2 == 0) {
+                it1.goLeft();
+            } else {
+                it1.goRight();
+            }
+            this.mirrorHAux(it1, it2, ++i);
+
+            it1.goUp();
+            it2.goUp();
+            --i;
+
+            it2.goRight();
+            if (i % 2 == 0) {
+                it1.goRight();
+            } else {
+                it1.goLeft();
+            }
+            this.mirrorHAux(it1, it2, ++i);
+
+            it1.goUp();
+            it2.goUp();
+            --i;
+        }
     }
 
     /**
