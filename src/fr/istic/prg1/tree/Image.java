@@ -182,7 +182,7 @@ public class Image extends AbstractImage {
     }
 
     /**
-     * @param it
+     * @param it iterateur sur this.
      */
     private void videoInverseAux(Iterator<Node> it) {
         if (it.nodeType() != NodeType.LEAF) {
@@ -193,7 +193,7 @@ public class Image extends AbstractImage {
             this.videoInverseAux(it);
             it.goUp();
         } else {
-            it.addValue(Node.valueOf(1 - it.getValue().state));
+            it.setValue(Node.valueOf(1 - it.getValue().state));
         }
     }
 
@@ -438,11 +438,52 @@ public class Image extends AbstractImage {
      */
     @Override
     public void intersection(AbstractImage image1, AbstractImage image2) {
-        System.out.println();
-        System.out.println("-------------------------------------------------");
-        System.out.println("Fonction � �crire");
-        System.out.println("-------------------------------------------------");
-        System.out.println();
+        Iterator<Node> it = this.iterator();
+        it.clear();
+        this.intersectionAux(it, image1.iterator(), image2.iterator());
+    }
+
+    private void intersectionAux(Iterator<Node> it1, Iterator<Node> it2, Iterator<Node> it3) {
+        if (it2.getValue().state == 0 || it3.getValue().state == 0) {
+            it1.addValue(Node.valueOf(0));
+        } else if (it2.getValue().state == it3.getValue().state) {
+            switch (it2.getValue().state) {
+                case 1:
+                    it1.addValue(Node.valueOf(1));
+                    break;
+
+                case 2:
+                    it1.addValue(Node.valueOf(2));
+                    it1.goLeft();
+                    it2.goLeft();
+                    it3.goLeft();
+                    this.intersectionAux(it1, it2, it3);
+                    int state1 = it1.getValue().state;
+                    it1.goUp();
+                    it2.goUp();
+                    it3.goUp();
+                    it1.goRight();
+                    it2.goRight();
+                    it3.goRight();
+                    this.intersectionAux(it1, it2, it3);
+                    int state2 = it1.getValue().state;
+                    it1.goUp();
+                    it2.goUp();
+                    it3.goUp();
+
+                    if (state1 == state2 && state2 != 2) {
+                        it1.clear();
+                        it1.addValue(Node.valueOf(state1));
+                    }
+                    break;
+            }
+        } else {
+            if (it2.getValue().state == 2) {
+                this.affectAux(it1, it2);
+            } else {
+                this.affectAux(it1, it3);
+            }
+        }
     }
 
     /**
@@ -460,33 +501,54 @@ public class Image extends AbstractImage {
     }
 
     /**
-     * @param it
-     * @param it1
-     * @param it2
+     * Méthode union auxiliaire. Utilisée pour parcourir les arbres.
+     *
+     * @param it  iterateur sur this. Stocke le resultat de l'union.
+     * @param it1 iterateur sur this pour la comparaison de l'union.
+     * @param it2 iterateur sur image2 pour la comparaiseon de l'union.
      */
     private void unionAux(Iterator<Node> it, Iterator<Node> it1, Iterator<Node> it2) {
         int state = it1.getValue().state + it2.getValue().state;
         switch (state) {
-            case 0:
-            case 1:
-                it.addValue(Node.valueOf(state));
-                break;
-
             case 2:
-                if (it1.getValue().state == 2) {
-                    this.affectAux(it, it1);
-                } else if (it1.getValue().state == 0) {
-                    this.affectAux(it, it2);
+                if (it1.getValue().state == 0) {
+                    affectAux(it, it2);
+                } else if (it1.getValue().state == 2) {
+                    affectAux(it, it1);
                 } else {
                     it.addValue(Node.valueOf(1));
                 }
                 break;
-
-            case 3: // le state de l'un des noeuds est egal 1, donc on allume it
+            case 3:
                 it.addValue(Node.valueOf(1));
                 break;
-
             case 4:
+                it.addValue(Node.valueOf(2));
+                it.goLeft();
+                it1.goLeft();
+                it2.goLeft();
+                unionAux(it, it1, it2);
+                int left = it.getValue().state;
+                it.goUp();
+                it1.goUp();
+                it2.goUp();
+                it.goRight();
+                it1.goRight();
+                it2.goRight();
+                unionAux(it, it1, it2);
+                int right = it.getValue().state;
+                it.goUp();
+                it1.goUp();
+                it2.goUp();
+                if (left == right && left != 2) {
+                    it.clear();
+                    it.addValue(Node.valueOf(left));
+                }
+                break;
+
+            default:
+                it.addValue(Node.valueOf(state));
+                break;
         }
     }
 
@@ -498,12 +560,38 @@ public class Image extends AbstractImage {
      */
     @Override
     public boolean testDiagonal() {
-        System.out.println();
-        System.out.println("-------------------------------------------------");
-        System.out.println("Fonction � �crire");
-        System.out.println("-------------------------------------------------");
-        System.out.println();
-        return false;
+        return this.testDiagonalAux(this.iterator(), true, true);
+    }
+
+    private boolean testDiagonalAux(Iterator<Node> it, boolean b1, boolean b2) {
+        if (it.getValue().state == 1) {
+            return true;
+        }
+        if (it.getValue().state == 0) {
+            return false;
+        }
+
+        if (b1) {
+            it.goLeft();
+            boolean bLeft = this.testDiagonalAux(it, !b1, false);
+            it.goUp();
+            it.goRight();
+            boolean bRight = this.testDiagonalAux(it, !b1, false);
+            it.goUp();
+            return bLeft && bRight;
+        } else {
+            if (b2) {
+                it.goLeft();
+                boolean bLeft = this.testDiagonalAux(it, !b1, b2);
+                it.goUp();
+                return bLeft;
+            } else {
+                it.goRight();
+                boolean bRight = this.testDiagonalAux(it, !b1, !b2);
+                it.goUp();
+                return bRight;
+            }
+        }
     }
 
     /**
@@ -517,12 +605,38 @@ public class Image extends AbstractImage {
      */
     @Override
     public boolean sameLeaf(int x1, int y1, int x2, int y2) {
-        System.out.println();
-        System.out.println("-------------------------------------------------");
-        System.out.println("Fonction � �crire");
-        System.out.println("-------------------------------------------------");
-        System.out.println();
-        return false;
+        Iterator<Node> it = this.iterator();
+        int rank = 0;
+        int upperX = 0;
+        int upperY = 0;
+        int fenetre = 256;
+        int hauteur_rect;
+
+        while (it.nodeType() != NodeType.LEAF) {
+            hauteur_rect = fenetre / 2;
+            if (rank % 2 == 0) {
+                if ((y1 < upperY + hauteur_rect) && (y2 < upperY + hauteur_rect)) {
+                    it.goLeft();
+                } else if ((y1 >= upperY + hauteur_rect) && (y2 >= upperY + hauteur_rect)) {
+                    upperY += hauteur_rect;
+                    it.goRight();
+                } else {
+                    return false;
+                }
+            } else {
+                fenetre = hauteur_rect;
+                if ((x1 < upperX + hauteur_rect) && (x2 < upperX + hauteur_rect)) {
+                    it.goLeft();
+                } else if ((x1 >= upperX + hauteur_rect) && (x2 >= upperX + hauteur_rect)) {
+                    upperX += hauteur_rect;
+                    it.goRight();
+                } else {
+                    return false;
+                }
+            }
+            rank++;
+        }
+        return true;
     }
 
     /**
@@ -533,11 +647,49 @@ public class Image extends AbstractImage {
      */
     @Override
     public boolean isIncludedIn(AbstractImage image2) {
-        System.out.println();
-        System.out.println("-------------------------------------------------");
-        System.out.println("Fonction � �crire");
-        System.out.println("-------------------------------------------------");
-        System.out.println();
+        if (this == image2) {
+            return true;
+        }
+
+        return this.isIncludedInAux(this.iterator(), image2.iterator());
+    }
+
+    private boolean isIncludedInAux(Iterator<Node> it1, Iterator<Node> it2) {
+        if (it2.getValue().state != 0 && it1.getValue().state != 1) {
+            boolean left = false, right = false;
+            it1.goLeft();
+            it2.goLeft();
+
+            if (it2.getValue().state == 1) {
+                left = true;
+            } else {
+                if (it1.getValue().state == 0) {
+                    left = true;
+                } else {
+                    this.isIncludedInAux(it1, it2);
+                }
+            }
+
+            it1.goUp();
+            it2.goUp();
+            it1.goRight();
+            it2.goRight();
+
+            if (it2.getValue().state == 1) {
+                right = true;
+            } else {
+                if (it1.getValue().state == 0) {
+                    right = true;
+                } else {
+                    this.isIncludedInAux(it1, it2);
+                }
+            }
+            it1.goUp();
+            it2.goUp();
+
+            return left && right;
+        }
+
         return false;
     }
 
