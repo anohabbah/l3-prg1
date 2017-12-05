@@ -353,7 +353,7 @@ public class TestImage {
 		assertTrue("videoInverse a2", compareImages(image1, image2));
 	}
 
-	// @Test
+	 @Test
 	public void testRotation90() {
 		Image image1 = readFile("cartoon.arb");
 		Image image2 = new Image();

@@ -140,11 +140,35 @@ public class Image extends AbstractImage {
      */
     @Override
     public void rotate90(AbstractImage image2) {
-        System.out.println();
-        System.out.println("-------------------------------------------------");
-        System.out.println("Fonction non demeand�e");
-        System.out.println("-------------------------------------------------");
-        System.out.println();
+        Iterator<Node> it = this.iterator();
+        it.clear();
+        this.rotate90Aux(it, image2.iterator(), 0);
+    }
+
+    private void rotate90Aux(Iterator<Node> it1, Iterator<Node> it2, int i) {
+        it1.addValue(Node.valueOf(it2.getValue().state));
+        if (it2.nodeType() != NodeType.LEAF) {
+            if (i % 2 == 1) {
+                it1.goLeft();
+            } else {
+                it1.goRight();
+            }
+            it2.goRight();
+            this.rotate90Aux(it1, it2, i++);
+            it1.goUp();
+            it2.goUp();
+            --i;
+            if (i % 2 == 1) {
+                it1.goRight();
+            } else {
+                it1.goLeft();
+            }
+            it2.goLeft();
+            this.rotate90Aux(it1, it2, i++);
+            it1.goUp();
+            it2.goUp();
+            --i;
+        }
     }
 
     /**
@@ -161,9 +185,6 @@ public class Image extends AbstractImage {
      * @param it
      */
     private void videoInverseAux(Iterator<Node> it) {
-        int state = it.getValue().state == 1 ? 0 : (it.getValue().state == 0 ? 1 : it.getValue().state);
-        it.setValue(Node.valueOf(state));
-
         if (it.nodeType() != NodeType.LEAF) {
             it.goLeft();
             this.videoInverseAux(it);
@@ -171,6 +192,8 @@ public class Image extends AbstractImage {
             it.goRight();
             this.videoInverseAux(it);
             it.goUp();
+        } else {
+            it.addValue(Node.valueOf(1 - it.getValue().state));
         }
     }
 
@@ -188,7 +211,9 @@ public class Image extends AbstractImage {
     }
 
     /**
-     * @param it1
+     * Methode auxiliaire de parcours de l'arbre.
+     *
+     * @param it1 iterateur de l'image
      * @param it2
      * @param i
      */
