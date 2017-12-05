@@ -434,6 +434,11 @@ public class Image extends AbstractImage {
         this.unionAux(it, image1.iterator(), image2.iterator());
     }
 
+    /**
+     * @param it
+     * @param it1
+     * @param it2
+     */
     private void unionAux(Iterator<Node> it, Iterator<Node> it1, Iterator<Node> it2) {
         int state = it1.getValue().state + it2.getValue().state;
         switch (state) {
