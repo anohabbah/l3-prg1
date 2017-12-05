@@ -255,21 +255,22 @@ public class Image extends AbstractImage {
      */
     @Override
     public void zoomIn(AbstractImage image2) {
-        Iterator<Node> it1 = this.iterator();
-        it1.clear();
-        Iterator<Node> it2 = image2.iterator();
-        it2.goLeft();
-        it2.goLeft();
-        if (it2.isEmpty()) {
-            it2.goUp();
-            this.zoomInAux(it1, it2);
+        Iterator<Node> it = this.iterator();
+        it.clear();
+        this.zoomInAux(it, image2.iterator(), 0);
+    }
+
+    private void zoomInAux(Iterator<Node> it1, Iterator<Node> it2, int i) {
+        if (i < 2) {
+            if (it2.nodeType() != NodeType.LEAF) {
+                it2.goLeft();
+                this.zoomInAux(it1, it2, ++i);
+            } else {
+                this.affectAux(it1, it2);
+            }
         } else {
             this.affectAux(it1, it2);
         }
-    }
-
-    private void zoomInAux(Iterator<Node> it1, Iterator<Node> it2) {
-        this.affectAux(it1, it2);
     }
 
     /**
@@ -281,11 +282,19 @@ public class Image extends AbstractImage {
      */
     @Override
     public void zoomOut(AbstractImage image2) {
-        System.out.println();
-        System.out.println("-------------------------------------------------");
-        System.out.println("Fonction � �crire");
-        System.out.println("-------------------------------------------------");
-        System.out.println();
+        Iterator<Node> it = this.iterator();
+        it.clear(); // vider d'abord l'arbre pour le reconstruire
+        it.addValue(Node.valueOf(2)); // racine
+        it.goRight(); // dans la zone inferieure
+        it.addValue(Node.valueOf(0));
+        it.goRoot(); // retour a la racine
+        it.goLeft(); // zone superieure
+        it.addValue(Node.valueOf(2));
+        it.goRight(); // zone superieure droite
+        it.addValue(Node.valueOf(0));
+        it.goUp();
+        it.goLeft();
+        this.affectAux(it, image2.iterator());
     }
 
     /**
