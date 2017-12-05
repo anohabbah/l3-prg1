@@ -78,19 +78,19 @@ public class Image extends AbstractImage {
         this.affectAux(it, image2.iterator());
     }
 
-    private void affectAux(Iterator<Node> it, Iterator<Node> it2) {
-        it.addValue(Node.valueOf(it2.getValue().state));
+    private void affectAux(Iterator<Node> it1, Iterator<Node> it2) {
+        it1.addValue(Node.valueOf(it2.getValue().state));
         if (it2.nodeType() != NodeType.LEAF) {
             it2.goLeft();
-            it.goLeft();
-            this.affectAux(it, it2);
+            it1.goLeft();
+            this.affectAux(it1, it2);
             it2.goUp();
-            it.goUp();
+            it1.goUp();
             it2.goRight();
-            it.goRight();
-            this.affectAux(it, it2);
+            it1.goRight();
+            this.affectAux(it1, it2);
             it2.goUp();
-            it.goUp();
+            it1.goUp();
         }
     }
 
@@ -255,11 +255,21 @@ public class Image extends AbstractImage {
      */
     @Override
     public void zoomIn(AbstractImage image2) {
-        System.out.println();
-        System.out.println("-------------------------------------------------");
-        System.out.println("Fonction � �crire");
-        System.out.println("-------------------------------------------------");
-        System.out.println();
+        Iterator<Node> it1 = this.iterator();
+        it1.clear();
+        Iterator<Node> it2 = image2.iterator();
+        it2.goLeft();
+        it2.goLeft();
+        if (it2.isEmpty()) {
+            it2.goUp();
+            this.zoomInAux(it1, it2);
+        } else {
+            this.affectAux(it1, it2);
+        }
+    }
+
+    private void zoomInAux(Iterator<Node> it1, Iterator<Node> it2) {
+        this.affectAux(it1, it2);
     }
 
     /**
