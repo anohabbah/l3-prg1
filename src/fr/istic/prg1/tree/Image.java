@@ -78,6 +78,10 @@ public class Image extends AbstractImage {
         this.affectAux(it, image2.iterator());
     }
 
+    /**
+     * @param it1
+     * @param it2
+     */
     private void affectAux(Iterator<Node> it1, Iterator<Node> it2) {
         it1.addValue(Node.valueOf(it2.getValue().state));
         if (it2.nodeType() != NodeType.LEAF) {
@@ -107,6 +111,10 @@ public class Image extends AbstractImage {
         this.rotate180Aux(it, image2.iterator());
     }
 
+    /**
+     * @param it1
+     * @param it2
+     */
     private void rotate180Aux(Iterator<Node> it1, Iterator<Node> it2) {
         it1.addValue(Node.valueOf(it2.getValue().state));
         if (it2.nodeType() != NodeType.LEAF) {
@@ -149,6 +157,9 @@ public class Image extends AbstractImage {
         this.videoInverseAux(this.iterator());
     }
 
+    /**
+     * @param it
+     */
     private void videoInverseAux(Iterator<Node> it) {
         int state = it.getValue().state == 1 ? 0 : (it.getValue().state == 0 ? 1 : it.getValue().state);
         it.setValue(Node.valueOf(state));
@@ -176,6 +187,11 @@ public class Image extends AbstractImage {
         this.mirrorVAux(it, image2.iterator(), 0);
     }
 
+    /**
+     * @param it1
+     * @param it2
+     * @param i
+     */
     private void mirrorVAux(Iterator<Node> it1, Iterator<Node> it2, int i) {
         it1.addValue(Node.valueOf(it2.getValue().state));
         if (it2.nodeType() != NodeType.LEAF) {
@@ -218,6 +234,11 @@ public class Image extends AbstractImage {
         this.mirrorHAux(it, image2.iterator(), 0);
     }
 
+    /**
+     * @param it1
+     * @param it2
+     * @param i
+     */
     private void mirrorHAux(Iterator<Node> it1, Iterator<Node> it2, int i) {
         it1.addValue(Node.valueOf(it2.getValue().state));
         if (it2.nodeType() != NodeType.LEAF) {
@@ -260,6 +281,11 @@ public class Image extends AbstractImage {
         this.zoomInAux(it, image2.iterator(), 0);
     }
 
+    /**
+     * @param it1
+     * @param it2
+     * @param i
+     */
     private void zoomInAux(Iterator<Node> it1, Iterator<Node> it2, int i) {
         if (i < 2) {
             if (it2.nodeType() != NodeType.LEAF) {
@@ -294,7 +320,87 @@ public class Image extends AbstractImage {
         it.addValue(Node.valueOf(0));
         it.goUp();
         it.goLeft();
-        this.affectAux(it, image2.iterator());
+        this.affectAux(it, image2.iterator(), 0);
+        it.goRoot();
+        this.lookEqualsSon(it);
+    }
+
+    /**
+     * Méthode auxiliaire de parcours.
+     *
+     * @param it1 iterateur sur this.
+     * @param it2 iterateur sur l'image à reduire.
+     * @param i   compteur de la prodondeur de l'arbre.
+     */
+    private void affectAux(Iterator<Node> it1, Iterator<Node> it2, int i) {
+        if (i < 14) {
+            it1.addValue(Node.valueOf(it2.getValue().state));
+            if (it2.nodeType() != NodeType.LEAF) {
+                it2.goLeft();
+                it1.goLeft();
+                ++i;
+                this.affectAux(it1, it2, i);
+                it2.goUp();
+                it1.goUp();
+                it2.goRight();
+                it1.goRight();
+                this.affectAux(it1, it2, i);
+                it2.goUp();
+                it1.goUp();
+                --i;
+            }
+        } else {
+            if (it2.getValue().state != 2) {
+                it1.addValue(Node.valueOf(it2.getValue().state));
+            } else {
+                it2.goLeft();
+                int leftChildState = it2.getValue().state;
+                it2.goUp();
+                it2.goRight();
+                int rightChildSate = it2.getValue().state;
+                it2.goUp();
+                if (leftChildState != 1 && rightChildSate != 1) {
+                    if (leftChildState != 2 || rightChildSate != 2) {
+                        it1.addValue(Node.valueOf(0));
+                    } else {
+                        it1.addValue(Node.valueOf(1));
+                    }
+                } else {
+                    it1.addValue(Node.valueOf(1));
+                }
+            }
+        }
+    }
+
+    /**
+     * Remonte tous les fils d'un parent dont les etats sont identiques.
+     *
+     * @param it
+     */
+    private void lookEqualsSon(Iterator<Node> it) {
+        it.goLeft();
+        int gauche = it.getValue().state;
+        it.goUp();
+        it.goRight();
+        int droite = it.getValue().state;
+        it.goUp();
+        if (gauche == 2) {
+            it.goLeft();
+            lookEqualsSon(it);
+            gauche = it.getValue().state;
+            it.goUp();
+        }
+        if (droite == 2) {
+            it.goRight();
+            lookEqualsSon(it);
+            droite = it.getValue().state;
+            it.goUp();
+        }
+        if (gauche == droite && gauche != 2) {
+            it.clear();
+            it.addValue(Node.valueOf(gauche));
+        }
+
     }
 
     /**
