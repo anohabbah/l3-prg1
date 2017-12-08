@@ -35,6 +35,7 @@ public class BinaryTree<T> {
     private Element root;
 
     public BinaryTree() {
+        this.root = new Element();
     }
 
     /**
@@ -49,7 +50,7 @@ public class BinaryTree<T> {
      * @return true si l'arbre this est vide, false sinon
      */
     public boolean isEmpty() {
-        return false;
+        return this.root.isEmpty();
     }
 
     /**
@@ -61,7 +62,7 @@ public class BinaryTree<T> {
 
         private TreeIterator() {
             stack = new Stack<Element>();
-            currentNode = root;
+            currentNode = BinaryTree.this.root;
         }
 
         /**
@@ -77,6 +78,9 @@ public class BinaryTree<T> {
                 e.printStackTrace();
                 System.exit(0);
             }
+
+            this.stack.push(this.currentNode);
+            this.currentNode = this.currentNode.left;
         }
 
         /**
@@ -92,6 +96,9 @@ public class BinaryTree<T> {
                 e.printStackTrace();
                 System.exit(0);
             }
+
+            this.stack.push(this.currentNode);
+            this.currentNode = this.currentNode.right;
         }
 
         /**
@@ -107,6 +114,8 @@ public class BinaryTree<T> {
                 e.printStackTrace();
                 System.exit(0);
             }
+
+            this.currentNode = this.stack.pop();
         }
 
         /**
@@ -114,6 +123,8 @@ public class BinaryTree<T> {
          */
         @Override
         public void goRoot() {
+            this.stack.clear();
+            this.currentNode = BinaryTree.this.root;
         }
 
         /**
@@ -121,7 +132,7 @@ public class BinaryTree<T> {
          */
         @Override
         public boolean isEmpty() {
-            return false;
+            return this.currentNode.isEmpty();
         }
 
         /**
@@ -129,7 +140,19 @@ public class BinaryTree<T> {
          */
         @Override
         public NodeType nodeType() {
-            return NodeType.SENTINEL;
+            if (this.isEmpty()) {
+                return NodeType.SENTINEL;
+            } else if (this.currentNode.left.isEmpty()) {
+                // Si le sous-arbre gauche est vide
+                // Et le sous-arbre droit est également vide, alors le noeud est une feuille.
+                // Mais si seul le sous-arbre droit est vide, alors le noeud est un noeud simple à gauche
+                return (this.currentNode.right.isEmpty()) ? NodeType.LEAF : NodeType.SIMPLE_LEFT;
+            } else {
+                // Si le sous-arbre gauche est vide, mais le sous-arbre droit ne l'est pas,
+                // alors le noeud est simple à droite.
+                // Autrement c'est un noeud double
+                return this.currentNode.right.isEmpty() ? NodeType.SIMPLE_RIGHT : NodeType.DOUBLE;
+            }
         }
 
         /**
@@ -145,6 +168,23 @@ public class BinaryTree<T> {
                 e.printStackTrace();
                 System.exit(0);
             }
+
+            Element newCurrentNode = null;
+            switch (this.nodeType()) {
+                case SENTINEL: return;
+                case DOUBLE: break;
+                case SIMPLE_LEFT:
+                    newCurrentNode = this.currentNode.left;
+                    break;
+                case SIMPLE_RIGHT:
+                    newCurrentNode = this.currentNode.right;
+                    break;
+                case LEAF:
+                    newCurrentNode = new Element();
+            }
+            this.currentNode.value = newCurrentNode.value;
+            this.currentNode.left = newCurrentNode.left;
+            this.currentNode.right = newCurrentNode.right;
         }
 
         /**
@@ -153,6 +193,9 @@ public class BinaryTree<T> {
          */
         @Override
         public void clear() {
+            this.currentNode.value = null;
+            this.currentNode.right = null;
+            this.currentNode.left = null;
         }
 
         /**
@@ -160,7 +203,7 @@ public class BinaryTree<T> {
          */
         @Override
         public T getValue() {
-            return null;
+            return  this.currentNode.value;
         }
 
         /**
@@ -180,6 +223,10 @@ public class BinaryTree<T> {
                 e.printStackTrace();
                 System.exit(0);
             }
+
+            this.currentNode.value = v;
+            this.currentNode.left = new Element();
+            this.currentNode.right = new Element();
         }
 
         /**
@@ -190,6 +237,7 @@ public class BinaryTree<T> {
          */
         @Override
         public void setValue(T v) {
+            this.currentNode.value = v;
         }
 
         private void ancestor(int i, int j) {
