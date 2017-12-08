@@ -1,3 +1,8 @@
+/**
+ * ANOH Abbah
+ *    &
+ * KOBENAN Sébastien
+ */
 package fr.istic.prg1.tree.util;
 
 import java.util.Stack;

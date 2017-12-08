@@ -1,3 +1,8 @@
+/**
+ * ANOH Abbah
+ *    &
+ * KOBENAN Sébastien
+ */
 package fr.istic.prg1.tree;
 
 import fr.istic.prg1.tree.util.AbstractImage;
@@ -321,7 +326,10 @@ public class Image extends AbstractImage {
         it.goLeft();
         this.xAffect(it, image2.iterator(), 0);
         it.goRoot();
-        this.lookEqualsSon(it);
+        // Filtrer les noeuds.
+        // Suppimer les sous-arbres dont la racine n'a que des fils de type feuille qui ont le
+        // même état et les remplacer par un noeud qui a le même état que les fils.
+        this.testNodes(it);
     }
 
     /**
@@ -329,7 +337,7 @@ public class Image extends AbstractImage {
      *
      * @param it1 iterateur sur this.
      * @param it2 iterateur sur l'image à reduire.
-     * @param i   compteur de la prodondeur de l'arbre.
+     * @param i   compteur pour determiner la profondeur du noeud.
      */
     protected void xAffect(Iterator<Node> it1, Iterator<Node> it2, int i) {
         if (i < 14) {
@@ -337,18 +345,19 @@ public class Image extends AbstractImage {
             if (it2.nodeType() != NodeType.LEAF) {
                 it2.goLeft();
                 it1.goLeft();
-                ++i;
-                this.xAffect(it1, it2, i);
+                this.xAffect(it1, it2, ++i);
                 it2.goUp();
                 it1.goUp();
+                --i;
+
                 it2.goRight();
                 it1.goRight();
-                this.xAffect(it1, it2, i);
+                this.xAffect(it1, it2, ++i);
                 it2.goUp();
                 it1.goUp();
                 --i;
             }
-        } else {
+        } else { // Au dela de la profondeur 14 ajouter que les feuilles
             if (it2.getValue().state != 2) {
                 it1.addValue(Node.valueOf(it2.getValue().state));
             } else {
@@ -372,32 +381,37 @@ public class Image extends AbstractImage {
     }
 
     /**
-     * Remonte tous les fils d'un parent dont les etats sont identiques.
+     * Filtre un sous-arbre.
+     * <p>Objectif: supprimer tous les sous-arbres dont les fils
+     * ont le même etat et que leur état est different de 2</p>
      *
-     * @param it
+     * @param it iterateur representant le sous-arbre
      */
-    protected void lookEqualsSon(Iterator<Node> it) {
+    protected void testNodes(Iterator<Node> it) {
         it.goLeft();
-        int gauche = it.getValue().state;
+        int leftChildState = it.getValue().state;
         it.goUp();
         it.goRight();
-        int droite = it.getValue().state;
+        int rightChildState = it.getValue().state;
         it.goUp();
-        if (gauche == 2) {
+
+        if (leftChildState == 2) {
             it.goLeft();
-            lookEqualsSon(it);
-            gauche = it.getValue().state;
+            testNodes(it);
+            leftChildState = it.getValue().state;
             it.goUp();
         }
-        if (droite == 2) {
+
+        if (rightChildState == 2) {
             it.goRight();
-            lookEqualsSon(it);
-            droite = it.getValue().state;
+            testNodes(it);
+            rightChildState = it.getValue().state;
             it.goUp();
         }
-        if (gauche == droite && gauche != 2) {
+
+        if (leftChildState == rightChildState && leftChildState != 2) {
             it.clear();
-            it.addValue(Node.valueOf(gauche));
+            it.addValue(Node.valueOf(leftChildState));
         }
 
     }
@@ -537,7 +551,7 @@ public class Image extends AbstractImage {
         return this.xTestDiagonal(this.iterator(), true, true);
     }
 
-    protected boolean xTestDiagonal(Iterator<Node> it, boolean isNotSquare, boolean isSquare) {
+    protected boolean xTestDiagonal(Iterator<Node> it, boolean horizontal, boolean goToLeft) {
         if (it.getValue().state == 1) {
             return true;
         }
@@ -545,23 +559,23 @@ public class Image extends AbstractImage {
             return false;
         }
 
-        if (isNotSquare) {
+        if (horizontal) {
             it.goLeft();
-            boolean bLeft = this.xTestDiagonal(it, !isNotSquare, true);
+            boolean bLeft = this.xTestDiagonal(it, !horizontal, true);
             it.goUp();
             it.goRight();
-            boolean bRight = this.xTestDiagonal(it, !isNotSquare, false);
+            boolean bRight = this.xTestDiagonal(it, !horizontal, false);
             it.goUp();
             return bLeft && bRight;
         } else {
-            if (isSquare) {
+            if (goToLeft) {
                 it.goLeft();
-                boolean bLeft = this.xTestDiagonal(it, !isNotSquare, isSquare);
+                boolean bLeft = this.xTestDiagonal(it, !horizontal, goToLeft);
                 it.goUp();
                 return bLeft;
             } else {
                 it.goRight();
-                boolean bRight = this.xTestDiagonal(it, !isNotSquare, !isSquare);
+                boolean bRight = this.xTestDiagonal(it, !horizontal, !goToLeft);
                 it.goUp();
                 return bRight;
             }
