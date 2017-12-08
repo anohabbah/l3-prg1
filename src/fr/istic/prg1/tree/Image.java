@@ -537,7 +537,7 @@ public class Image extends AbstractImage {
         return this.xTestDiagonal(this.iterator(), true, true);
     }
 
-    protected boolean xTestDiagonal(Iterator<Node> it, boolean b1, boolean b2) {
+    protected boolean xTestDiagonal(Iterator<Node> it, boolean isNotSquare, boolean isSquare) {
         if (it.getValue().state == 1) {
             return true;
         }
@@ -545,23 +545,23 @@ public class Image extends AbstractImage {
             return false;
         }
 
-        if (b1) {
+        if (isNotSquare) {
             it.goLeft();
-            boolean bLeft = this.xTestDiagonal(it, !b1, false);
+            boolean bLeft = this.xTestDiagonal(it, !isNotSquare, true);
             it.goUp();
             it.goRight();
-            boolean bRight = this.xTestDiagonal(it, !b1, false);
+            boolean bRight = this.xTestDiagonal(it, !isNotSquare, false);
             it.goUp();
             return bLeft && bRight;
         } else {
-            if (b2) {
+            if (isSquare) {
                 it.goLeft();
-                boolean bLeft = this.xTestDiagonal(it, !b1, b2);
+                boolean bLeft = this.xTestDiagonal(it, !isNotSquare, isSquare);
                 it.goUp();
                 return bLeft;
             } else {
                 it.goRight();
-                boolean bRight = this.xTestDiagonal(it, !b1, !b2);
+                boolean bRight = this.xTestDiagonal(it, !isNotSquare, !isSquare);
                 it.goUp();
                 return bRight;
             }
