@@ -156,7 +156,9 @@ public class SmallSet {
 	 *            deuxième ensemble
 	 */
 	public void difference(SmallSet set2) {
-		if (this != set2) {
+		if (this == set2) {
+			this.clear();
+		} else {
 			for (int i = 0; i < SmallSet.setSize; i++) {
 				this.tab[i] &= !set2.tab[i];
 			}
@@ -170,7 +172,9 @@ public class SmallSet {
 	 *            deuxième ensemble
 	 */
 	public void symmetricDifference(SmallSet set2) {
-		if (this != set2) {
+		if (this == set2) {
+			this.clear();
+		} else {
 			for (int i = 0; i < SmallSet.setSize; i++) {
 				this.tab[i] ^= set2.tab[i];
 			}
@@ -203,22 +207,19 @@ public class SmallSet {
 	public boolean isIncludedIn(SmallSet set2) {
 		if (this == set2) {
 			return  true;
-		}
-
-		if (this.size() > set2.size()) {
+		} else if (this.size() > set2.size()) {
 			return false;
-		}
-
-		// this est inclus dans set2 si chaque élémént de this appartient à set2.
-        // Il suffit de trouver un élémént de this qui n'appartient pas à set2 pour
-        // prouver que this n'est pas inclus dans set2.
-		for (int i = 0; i < SmallSet.setSize; i++) {
-			if (this.contains(i) && !set2.contains(i)) {
-				return false;
+		} else {
+			// this est inclus dans set2 si chaque élémént de this appartient à set2.
+			// Il suffit de trouver un élémént de this qui n'appartient pas à set2 pour
+			// prouver que this n'est pas inclus dans set2.
+			int i = 0;
+			while (i < SmallSet.setSize && (!this.tab[i] || set2.tab[i])) {
+				++i;
 			}
-		}
 
-		return true;
+			return i == SmallSet.setSize;
+		}
 	}
 
 	@Override
@@ -233,19 +234,8 @@ public class SmallSet {
 			return false;
 		}
 		// il reste le cas quand obj est un SmallSet
-		if (this.size() != ((SmallSet) obj).size()) {
-			return false;
-		}
-
-		// this est égal à obj si les éléments de this et de obj sont identiques.
-		int cpt = 0;
-		for (int i = 0; i < SmallSet.setSize; i++) {
-			if (this.tab[i] == ((SmallSet) obj).tab[i]) {
-				++cpt;
-			}
-		}
-
-		return cpt == SmallSet.setSize;
+		SmallSet set2 = (SmallSet) obj;
+		return java.util.Arrays.equals(this.tab, set2.tab);
 	}
 
 	/**
