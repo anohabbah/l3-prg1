@@ -1,5 +1,6 @@
 package fr.istic.prg1.tp3;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class InsertionInteger {
@@ -19,11 +20,7 @@ public class InsertionInteger {
      * @return la partie de <code>array</code> remplie.
      */
     public int[] toArray() {
-        int[] arr = new int[this.size];
-
-        System.arraycopy(this.array, 0, arr, 0, this.size);
-
-        return arr;
+        return Arrays.copyOf(this.array, this.size);
     }
 
     /**
@@ -37,12 +34,11 @@ public class InsertionInteger {
      *          true si value n,appartient pas à array[0..size-1]
      */
     public boolean insert(int value) {
-        boolean exist = false;
-
         if (value < 0) {
             return false;
         }
 
+        boolean exist = false;
         // Vérifier d'abord si value appartient à array[0..size-1]
         for (int i = 0; i < this.size; i++) {
             if (this.array[i] == value) {
@@ -56,18 +52,7 @@ public class InsertionInteger {
             this.array[this.size] = value;
             this.size++;
 
-            // Algorithme du trie par insertion
-            for (int i = 0; i < this.size; i++) {
-                int j = i;
-                int x = this.array[i];
-
-                while (j > 0 && x < this.array[j - 1]) {
-                    this.array[j] = this.array[j - 1];
-                    j--;
-                }
-
-                this.array[j] = x;
-            }
+            Arrays.sort(this.array, 0, this.size);
         }
 
         return !exist;
