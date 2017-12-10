@@ -58,20 +58,24 @@ public class InsertionPair {
      *                  et trie array par ordre croissant et retourne true</p>
      */
     public boolean insert(Pair pair) {
-        // La méthode Arrays.binarySearch utilise l'algorithme de dichotomie pour effectuer la recherche.
-        // Elle retourne un entier >= 0 si elle trouve l'élément
-        int insertPoint = Arrays.binarySearch(this.array, 0, this.size, pair);
-        boolean exist = insertPoint >= 0;
+        if (this.size < SIZE_MAX) {
+            // La méthode Arrays.binarySearch utilise l'algorithme de dichotomie pour effectuer la recherche.
+            // Elle retourne un entier >= 0 si elle trouve l'élément
+            int insertPoint = Arrays.binarySearch(this.array, 0, this.size, pair);
+            boolean exist = insertPoint >= 0;
 
-        // Si pair n'appartient par à array[0..size-1], ajouter pair à array[0..size],
-        // incrementer size de 1 et trier à array[0..size] par ordre croissant.
-        if (!exist && this.size < SIZE_MAX) {
-            this.array[this.size] = pair;
-            this.size++;
+            // Si pair n'appartient par à array[0..size-1], ajouter pair à array[0..size],
+            // incrementer size de 1 et trier à array[0..size] par ordre croissant.
+            if (!exist) {
+                this.array[this.size] = pair;
+                this.size++;
 
-            Arrays.sort(this.array, 0, this.size);
+                Arrays.sort(this.array, 0, this.size);
+            }
+
+            return !exist;
         }
 
-        return !exist;
+        return false;
     }
 }

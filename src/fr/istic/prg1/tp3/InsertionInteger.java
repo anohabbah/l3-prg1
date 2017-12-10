@@ -34,14 +34,14 @@ public class InsertionInteger {
      *          true si value n,appartient pas à array[0..size-1]
      */
     public boolean insert(int value) {
-        if (value >= 0) {
+        if (value >= 0 && this.size < SIZE_MAX) {
             int insertPoint = Arrays.binarySearch(this.array, 0, this.size, value);
             boolean exist = insertPoint >= 0;
 
             // Ajouter value à array si value ne l'appartient pas,
             // incrementer size de 1
             // et trier array
-            if (!exist && this.size < SIZE_MAX) {
+            if (!exist) {
                 this.array[this.size] = value;
                 this.size++;
 
