@@ -1,5 +1,7 @@
 package fr.istic.prg1.tp4;
 
+import java.util.Arrays;
+
 /**
  * @author Mickaël Foursov <foursov@univ-rennes1.fr>
  * @version 4.0
@@ -235,7 +237,7 @@ public class SmallSet {
 		}
 		// il reste le cas quand obj est un SmallSet
 		SmallSet set2 = (SmallSet) obj;
-		return java.util.Arrays.equals(this.tab, set2.tab);
+		return Arrays.equals(this.tab, set2.tab);
 	}
 
 	/**
