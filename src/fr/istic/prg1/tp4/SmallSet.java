@@ -126,8 +126,10 @@ public class SmallSet {
 	 *            deuxième ensemble
 	 */
 	public void union(SmallSet set2) {
-		for (int i = 0; i < SmallSet.setSize; i++) {
-			this.tab[i] = this.contains(i) || set2.contains(i);
+		if (this != set2) {
+			for (int i = 0; i < SmallSet.setSize; i++) {
+				this.tab[i] = this.contains(i) || set2.contains(i);
+			}
 		}
 	}
 
@@ -138,8 +140,12 @@ public class SmallSet {
 	 *            deuxième ensemble
 	 */
 	public void intersection(SmallSet set2) {
-		for (int i = 0; i < SmallSet.setSize; i++) {
-			this.tab[i] = this.contains(i) && set2.contains(i);
+		if (this == set2) {
+			this.clear();
+		} else {
+			for (int i = 0; i < SmallSet.setSize; i++) {
+				this.tab[i] = this.contains(i) && set2.contains(i);
+			}
 		}
 	}
 
@@ -150,8 +156,10 @@ public class SmallSet {
 	 *            deuxième ensemble
 	 */
 	public void difference(SmallSet set2) {
-		for (int i = 0; i < SmallSet.setSize; i++) {
-			this.tab[i] = this.contains(i) && !set2.contains(i);
+		if (this != set2) {
+			for (int i = 0; i < SmallSet.setSize; i++) {
+				this.tab[i] &= !set2.tab[i];
+			}
 		}
 	}
 
@@ -162,8 +170,10 @@ public class SmallSet {
 	 *            deuxième ensemble
 	 */
 	public void symmetricDifference(SmallSet set2) {
-		for (int i = 0; i < SmallSet.setSize; i++) {
-			this.tab[i] = this.contains(i) ^ set2.contains(i);
+		if (this != set2) {
+			for (int i = 0; i < SmallSet.setSize; i++) {
+				this.tab[i] ^= set2.tab[i];
+			}
 		}
 	}
 
