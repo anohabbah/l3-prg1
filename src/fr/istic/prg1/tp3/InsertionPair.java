@@ -1,5 +1,6 @@
 package fr.istic.prg1.tp3;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class InsertionPair {
@@ -45,31 +46,22 @@ public class InsertionPair {
      * @return Pair[]
      */
     public Pair[] toArray() {
-        Pair[] arr = new Pair[this.size];
-
-        System.arraycopy(this.array, 0, arr, 0, this.size);
-
-        return arr;
+        return Arrays.copyOf(this.array, this.size);
     }
 
     /**
      * Insère un objet {@link Pair}  dans array si cet objet n'appartient pas déjà à array[0..size-1].
-     * <p>
-     * <p>Retourne false si pair appartient à array, autrement l'ajoute et trie array par ordre croissant. et retourne true</p>
      *
      * @param pair l'objet à inserer
      * @return boolean
+     *              <p>Retourne false si pair appartient à array, autrement l'ajoute
+     *                  et trie array par ordre croissant et retourne true</p>
      */
     public boolean insert(Pair pair) {
-        boolean exist = false;
-
-        // Verifier si pair appartient à array[0..size-1]
-        for (int i = 0; i < this.size; i++) {
-            if (this.array[i].equals(pair)) {
-                exist = true;
-                break; // Non nécessaire de continuer à chercher si pair appartient à array[0..size-1]
-            }
-        }
+        // La méthode Arrays.binarySearch utilise l'algorithme de dichotomie pour effectuer la recherche.
+        // Elle retourne un entier >= 0 si elle trouve l'élément
+        int insertPoint = Arrays.binarySearch(this.array, 0, this.size, pair);
+        boolean exist = insertPoint >= 0;
 
         // Si pair n'appartient par à array[0..size-1], ajouter pair à array[0..size],
         // incrementer size de 1 et trier à array[0..size] par ordre croissant.
@@ -77,16 +69,7 @@ public class InsertionPair {
             this.array[this.size] = pair;
             this.size++;
 
-            // Algorithme du trie par insertion
-            for (int i = 0; i < this.size; i++) {
-                Pair p = this.array[i];
-                int j = i;
-                while (j > 0 && p.less(this.array[j - 1])) {
-                    this.array[j] = this.array[j - 1];
-                    j--;
-                }
-                this.array[j] = p;
-            }
+            Arrays.sort(this.array, 0, this.size);
         }
 
         return !exist;

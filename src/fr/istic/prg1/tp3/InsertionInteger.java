@@ -34,28 +34,24 @@ public class InsertionInteger {
      *          true si value n,appartient pas à array[0..size-1]
      */
     public boolean insert(int value) {
-        if (value < 0) {
-            return false;
-        }
+        if (value >= 0) {
+            int insertPoint = Arrays.binarySearch(this.array, 0, this.size, value);
+            boolean exist = insertPoint >= 0;
 
-        boolean exist = false;
-        // Vérifier d'abord si value appartient à array[0..size-1]
-        for (int i = 0; i < this.size; i++) {
-            if (this.array[i] == value) {
-                exist = true;
-                break; // Sortie de la boucle si value appartient à array[0..size-1]
+            // Ajouter value à array si value ne l'appartient pas,
+            // incrementer size de 1
+            // et trier array
+            if (!exist && this.size < SIZE_MAX) {
+                this.array[this.size] = value;
+                this.size++;
+
+                Arrays.sort(this.array, 0, this.size);
             }
+
+            return !exist;
         }
 
-        // Ajouter value à array si value ne l'appartient pas, incrementer size de 1 et trier array
-        if (!exist && this.size < SIZE_MAX) {
-            this.array[this.size] = value;
-            this.size++;
-
-            Arrays.sort(this.array, 0, this.size);
-        }
-
-        return !exist;
+        return false;
     }
 
     public void createArray(Scanner scanner) {
