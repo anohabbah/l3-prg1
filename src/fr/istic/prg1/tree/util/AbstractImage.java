@@ -353,7 +353,7 @@ public abstract class AbstractImage extends BinaryTree<Node> {
     /**
      * this devient identique à image2.
      *
-     * @param image2 image à copier
+     * @param image image à copier
      * @pre !image2.isEmpty()
      */
     public abstract void affect(AbstractImage image);

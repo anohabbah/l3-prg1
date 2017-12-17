@@ -151,12 +151,12 @@ public class BinaryTree<T> {
                 // Si le sous-arbre gauche est vide
                 // Et le sous-arbre droit est également vide, alors le noeud est une feuille.
                 // Mais si seul le sous-arbre droit est vide, alors le noeud est un noeud simple à gauche
-                return (this.currentNode.right.isEmpty()) ? NodeType.LEAF : NodeType.SIMPLE_LEFT;
+                return this.currentNode.right.isEmpty() ? NodeType.LEAF : NodeType.SIMPLE_RIGHT;
             } else {
                 // Si le sous-arbre gauche est vide, mais le sous-arbre droit ne l'est pas,
                 // alors le noeud est simple à droite.
                 // Autrement c'est un noeud double
-                return this.currentNode.right.isEmpty() ? NodeType.SIMPLE_RIGHT : NodeType.DOUBLE;
+                return this.currentNode.right.isEmpty() ? NodeType.SIMPLE_LEFT : NodeType.DOUBLE;
             }
         }
 
