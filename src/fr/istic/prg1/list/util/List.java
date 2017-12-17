@@ -107,14 +107,8 @@ public class List<T extends SuperT> {
 
         @Override
         public void addRight(T v) {
-            Element voisinDroit = this.current.right;
-            Element voisinGauche = this.current;
-            this.current = new Element();
-            this.current.value = v;
-            this.current.left = voisinGauche;
-            this.current.right = voisinDroit;
-            voisinDroit.left = this.current;
-            voisinGauche.right = this.current;
+            this.goForward();
+            this.addLeft(v);
         }
 
         @Override
