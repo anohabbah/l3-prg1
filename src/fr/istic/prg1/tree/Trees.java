@@ -4,6 +4,7 @@ import fr.istic.prg1.tree.util.BinaryTree;
 import fr.istic.prg1.tree.util.Iterator;
 import fr.istic.prg1.tree.util.Node;
 import fr.istic.prg1.tree.util.NodeType;
+import sun.awt.image.IntegerComponentRaster;
 
 public class Trees {
     /**
@@ -21,120 +22,58 @@ public class Trees {
             System.exit(0);
         }
 
-        return isSymmetricEachNodeNotLeaf(tree.iterator());
+        return xIsSymmetric(tree.iterator());
     }
 
-    private static boolean isSymmetricEachNodeNotLeaf(Iterator<Integer> it) {
-        NodeType type = it.nodeType();
-        boolean b = xEvalTree(it);
-
-        while (type != NodeType.SENTINEL) {
+    /**
+     * @param it
+     * @return
+     */
+    private static boolean xIsSymmetric(Iterator<Integer> it) {
+        if (it.nodeType() != NodeType.SENTINEL) {
+            boolean left, right;
+            Integer currentRoot = it.getValue();
             it.goLeft();
-            isSymmetricEachNodeNotLeaf(it);
+            left = xEvalSubTree(it, currentRoot, true);
             it.goUp();
             it.goRight();
-            isSymmetricEachNodeNotLeaf(it);
+            right = xEvalSubTree(it, currentRoot, false);
+            it.goUp();
+
+            if (left && right) {
+                it.goLeft();
+                xIsSymmetric(it);
+                it.goUp();
+                it.goRight();
+                xIsSymmetric(it);
+                it.goUp();
+            } else
+                return false;
+        }
+
+        return true;
+    }
+
+    private static boolean xEvalSubTree(Iterator<Integer> it, Integer currentRoot, boolean isLeft) {
+        if (it.nodeType() != NodeType.SENTINEL) {
+            Integer childNodeValue = it.getValue();
+            if (isLeft) {
+                if (currentRoot < childNodeValue)
+                    return false;
+            } else {
+                if (currentRoot > childNodeValue)
+                    return false;
+            }
+
+            it.goLeft();
+            xEvalSubTree(it, currentRoot, isLeft);
+            it.goUp();
+            it.goRight();
+            xEvalSubTree(it, currentRoot, isLeft);
             it.goUp();
         }
 
-        return b;
-    }
-
-    /**
-     * @param it l'itérateur
-     * @return <code>true</code> si l'arbre tree est organisé de façon symétrique (c'est-à-dire, la valeur d'un noeud
-     * est supérieure est aux valeurs dans son fils gauche, et inférieure aux valeurs dans son fils droit),
-     * <code>false</code> sinon.
-     * @pre !it.isEmpty()
-     */
-    private static boolean xEvalTree(Iterator<Integer> it) {
-        Integer rootValue = it.getValue();
-        boolean left = true, right = true;
-        switch (it.nodeType()) {
-            case SIMPLE_RIGHT:
-                it.goRight();
-                right = xIsSymmetric(it, rootValue, false);
-                it.goUp();
-                break;
-
-            case SIMPLE_LEFT:
-                it.goLeft();
-                left = xIsSymmetric(it, rootValue, true);
-                it.goUp();
-                break;
-
-            case DOUBLE:
-                it.goLeft();
-                left = xIsSymmetric(it, rootValue, true);
-                it.goUp();
-                it.goRight();
-                right = xIsSymmetric(it, rootValue, false);
-                it.goUp();
-                break;
-
-            default: //
-        }
-
-        return left && right;
-    }
-
-    /**
-     * @param it     itérateur sur un arbre de type <code>BinaryTree<Interger></code>
-     * @param isLeft détermine si l'itérateur doit aller à gauche ou à droite.
-     * @return <code>true</code> si la valeur du noeud courant est supérieure (ou inférieure) aux valeurs de
-     * son fils gauche (ou droit), <code>false</code> sinon.
-     * <p>isLeft permet de connaître le sous-arbre correspondant (fils gauche ou droit).</p>
-     */
-    private static boolean xIsSymmetric(Iterator<Integer> it, Integer rootValue, boolean isLeft) {
-        System.out.println(rootValue);
-        NodeType type = it.nodeType();
-        assert type != NodeType.SENTINEL : "L'itérateur est sur le butoir.";
-
-        boolean left = true, right = true;
-
-        switch (type) {
-            case LEAF:
-                return isLeft ? rootValue > it.getValue() : rootValue < it.getValue();
-
-            case DOUBLE:
-                if (isLeft) {
-                    if (rootValue > it.getValue()) {
-                        it.goLeft();
-                        left = xIsSymmetric(it, rootValue, true);
-                        it.goUp();
-                        it.goRight();
-                        right = xIsSymmetric(it, rootValue, true);
-                        it.goUp();
-                    } else {
-                        return false;
-                    }
-                } else {
-                    if (rootValue < it.getValue()) {
-                        it.goLeft();
-                        left = xIsSymmetric(it, rootValue, false);
-                        it.goUp();
-                        it.goRight();
-                        right = xIsSymmetric(it, rootValue, false);
-                        it.goUp();
-                    } else {
-                        return false;
-                    }
-                }
-                break;
-
-            case SIMPLE_RIGHT:
-                it.goRight();
-                right = xIsSymmetric(it, rootValue, false);
-                it.goUp();
-                break;
-
-            case SIMPLE_LEFT:
-                it.goLeft();
-                left = xIsSymmetric(it, rootValue, true);
-                it.goUp();
-        }
-
-        return left && right;
+        return true;
     }
 
     /**
