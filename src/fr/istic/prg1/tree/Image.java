@@ -1,6 +1,6 @@
 /**
  * ANOH Abbah
- *    &
+ * &
  * KOBENAN Sébastien
  */
 package fr.istic.prg1.tree;
@@ -413,7 +413,6 @@ public class Image extends AbstractImage {
             it.clear();
             it.addValue(Node.valueOf(leftChildState));
         }
-
     }
 
     /**
@@ -561,21 +560,21 @@ public class Image extends AbstractImage {
 
         if (horizontal) {
             it.goLeft();
-            boolean bLeft = this.xTestDiagonal(it, !horizontal, true);
+            boolean bLeft = this.xTestDiagonal(it, false, true);
             it.goUp();
             it.goRight();
-            boolean bRight = this.xTestDiagonal(it, !horizontal, false);
+            boolean bRight = this.xTestDiagonal(it, false, false);
             it.goUp();
             return bLeft && bRight;
         } else {
             if (goToLeft) {
                 it.goLeft();
-                boolean bLeft = this.xTestDiagonal(it, !horizontal, goToLeft);
+                boolean bLeft = this.xTestDiagonal(it, true, true);
                 it.goUp();
                 return bLeft;
             } else {
                 it.goRight();
-                boolean bRight = this.xTestDiagonal(it, !horizontal, !goToLeft);
+                boolean bRight = this.xTestDiagonal(it, true, false);
                 it.goUp();
                 return bRight;
             }
@@ -597,26 +596,26 @@ public class Image extends AbstractImage {
         int rank = 0;
         int upperX = 0;
         int upperY = 0;
-        int fenetre = 256;
-        int hauteur_rect;
+        int window = 256;
+        int height;
 
         while (it.nodeType() != NodeType.LEAF) {
-            hauteur_rect = fenetre / 2;
+            height = window / 2;
             if (rank % 2 == 0) {
-                if ((y1 < upperY + hauteur_rect) && (y2 < upperY + hauteur_rect)) {
+                if ((y1 < upperY + height) && (y2 < upperY + height)) {
                     it.goLeft();
-                } else if ((y1 >= upperY + hauteur_rect) && (y2 >= upperY + hauteur_rect)) {
-                    upperY += hauteur_rect;
+                } else if ((y1 >= upperY + height) && (y2 >= upperY + height)) {
+                    upperY += height;
                     it.goRight();
                 } else {
                     return false;
                 }
             } else {
-                fenetre = hauteur_rect;
-                if ((x1 < upperX + hauteur_rect) && (x2 < upperX + hauteur_rect)) {
+                window = height;
+                if ((x1 < upperX + height) && (x2 < upperX + height)) {
                     it.goLeft();
-                } else if ((x1 >= upperX + hauteur_rect) && (x2 >= upperX + hauteur_rect)) {
-                    upperX += hauteur_rect;
+                } else if ((x1 >= upperX + height) && (x2 >= upperX + height)) {
+                    upperX += height;
                     it.goRight();
                 } else {
                     return false;
@@ -635,11 +634,8 @@ public class Image extends AbstractImage {
      */
     @Override
     public boolean isIncludedIn(AbstractImage image2) {
-        if (this == image2) {
-            return true;
-        }
+        return this == image2 || this.xIncludedIn(this.iterator(), image2.iterator());
 
-        return this.xIncludedIn(this.iterator(), image2.iterator());
     }
 
     protected boolean xIncludedIn(Iterator<Node> it1, Iterator<Node> it2) {
@@ -680,5 +676,4 @@ public class Image extends AbstractImage {
 
         return false;
     }
-
 }
