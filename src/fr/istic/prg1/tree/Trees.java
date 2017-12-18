@@ -30,50 +30,27 @@ public class Trees {
      * @return
      */
     private static boolean xIsSymmetric(Iterator<Integer> it) {
-        if (it.nodeType() != NodeType.SENTINEL) {
-            boolean left, right;
-            Integer currentRoot = it.getValue();
-            it.goLeft();
-            left = xEvalSubTree(it, currentRoot, true);
-            it.goUp();
-            it.goRight();
-            right = xEvalSubTree(it, currentRoot, false);
-            it.goUp();
+        boolean left = true, right = true;
+        if (!it.isEmpty()) {
+            Integer father = it.getValue();
 
-            if (left && right) {
-                it.goLeft();
-                xIsSymmetric(it);
-                it.goUp();
-                it.goRight();
-                xIsSymmetric(it);
-                it.goUp();
-            } else
+            it.goLeft();
+            if (father < it.getValue()) {
                 return false;
-        }
+            } else
+                left = xIsSymmetric(it);
 
-        return true;
-    }
-
-    private static boolean xEvalSubTree(Iterator<Integer> it, Integer currentRoot, boolean isLeft) {
-        if (it.nodeType() != NodeType.SENTINEL) {
-            Integer childNodeValue = it.getValue();
-            if (isLeft) {
-                if (currentRoot < childNodeValue)
-                    return false;
-            } else {
-                if (currentRoot > childNodeValue)
-                    return false;
-            }
-
-            it.goLeft();
-            xEvalSubTree(it, currentRoot, isLeft);
             it.goUp();
             it.goRight();
-            xEvalSubTree(it, currentRoot, isLeft);
+            if (father > it.getValue()) {
+                return false;
+            } else {
+                right = xIsSymmetric(it);
+            }
             it.goUp();
         }
 
-        return true;
+        return left && right;
     }
 
     /**
